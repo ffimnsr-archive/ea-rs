@@ -1,0 +1,15 @@
+[workspace]
+members = [
+    "packages/*",
+]
+default-members = [
+    "packages/ea_account",
+]
+exclude = [
+    "packages/grand_central_dispatch",
+    "packages/haya",
+    "packages/kube",
+    "packages/midas",
+    "packages/passport",
+    "packages/psyche",
+]

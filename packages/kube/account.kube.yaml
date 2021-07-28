@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: account
+  namespace: sesame
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: account
+  namespace: sesame
+data:
+  FRONTEND_URL: open.se-same.com
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account
+  namespace: sesame
+spec:
+  selector:
+    app: account
+  ports:
+    - port: 8080
+      protocol: TCP
+      name: account
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account
+  namespace: sesame
+spec:
+  selector:
+    matchLabels:
+      app: account
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: account
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: account
+          image: registry.gitlab.com/osslocal/ea-rs/ea_account:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 60m
+          envFrom:
+            - configMapRef:
+                name: account
+            - secretRef:
+                name: dbcred
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      imagePullSecrets:
+        - name: regcred
+      securityContext:
+        fsGroup: 1000
+      serviceAccountName: account

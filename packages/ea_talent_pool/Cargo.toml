@@ -1,0 +1,32 @@
+[package]
+name = "ea_talent_pool"
+version = "0.1.0"
+edition = "2021"
+authors = ["ffimnsr <ffimnsr@gmail.com>"]
+publish = false
+description = "The talent pool service"
+homepage = "https://vastorigins.org"
+readme = "README.md"
+
+[dependencies]
+dotenv = "0.15"
+log = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.2", features = ["tracing-log", "fmt", "json"] }
+tracing-attributes = "0.1"
+tracing-futures = "0.2"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.19", default-features = false, features = ["full"] }
+futures = { version = "0.3", default-features = false }
+futures-util = { version = "0.3", default-features = false }
+mongodb = "2.1"
+bson = { version = "2.1", features = ["uuid-0_8", "chrono-0_4"] }
+uuid = { version = "0.8", features = ["serde", "v4"] }
+nanoid = "0.4"
+hyper = { version = "0.14", features = ["full"] }
+axum = "0.5"
+axum-macros = "0.2"
+tower-http = { version = "0.3.0", features = ["cors"] }
+ea_trident = { version = "0.1", path = "../ea_trident" }

@@ -1,0 +1,13 @@
+/packages/psyche
+
+.git
+.vscode
+.cargo
+benches
+examples
+target
+tests
+*.log
+*.code-workspace
+.git
+README.md

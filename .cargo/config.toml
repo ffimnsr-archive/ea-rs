@@ -1,0 +1,15 @@
+[alias]
+b = "build --offline"
+c = "check --offline"
+r = "run --offline"
+dup = "tree --duplicate"
+
+[build]
+rustc-wrapper = "sccache"
+incremental = false
+
+[target.x86_64-unknown-linux-gnu]
+linker = "clang"
+rustflags = [
+    "-C", "link-arg=-fuse-ld=mold",
+]
