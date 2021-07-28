@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "packages/account",
+    "packages/address",
+    "packages/ea_sql_derive",
+    "packages/project",
+]
+default-members = [
+    "packages/account",
+    "packages/address",
+    "packages/project",    
+]
