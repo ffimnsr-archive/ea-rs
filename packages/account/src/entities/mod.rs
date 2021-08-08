@@ -27,3 +27,13 @@ pub trait BaseEntity {
     fn get_required_fields_arr() -> Vec<String>;
     fn field_count() -> usize;
 }
+
+pub trait MutateEntity {
+    fn get_required_create_fields() -> Cow<'static, str>;
+    fn get_required_create_fields_arr() -> Vec<String>;
+    fn create_field_count() -> usize;
+
+    fn get_required_update_fields() -> Cow<'static, str>;
+    fn get_required_update_fields_arr() -> Vec<String>;
+    fn update_field_count() -> usize;
+}

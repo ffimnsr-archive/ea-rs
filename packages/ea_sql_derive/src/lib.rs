@@ -19,8 +19,6 @@ pub fn derive_from_row(input: TokenStream) -> TokenStream {
     let field_name_r2 = field_name_r1.clone();
 
     let expanded = quote! {
-        use tokio_postgres::Row;
-
         impl From<&Row> for #struct_name {
             fn from(row: &Row) -> Self {
                 Self {

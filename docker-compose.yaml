@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+    db:
+        image: postgres:14beta2-buster
+        container_name: postgres_db_svc
+        restart: always
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=ea
+            - POSTGRES_DB=ea
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432/tcp
+    secrets:
+        image: vault:1.8.0
+        container_name: vault_secrets_svc
+        restart: always
+        environment:
+            - VAULT_DEV_ROOT_TOKEN_ID=ea
+        ports:
+            - 8200:8200/tcp
+        cap_add:
+            - IPC_LOCK
+    broker:
+        image: redis:6.2.5-alpine3.14
+        container_name: redis_broker_svc
+        restart: always
+        volumes:
+            - broker-data:/data
+        ports:
+            - 6379:6379/tcp
+
+volumes:
+    db-data:
+    broker-data:
+
+networks:
+    default:
+        external: true
+        name: ea-intranet

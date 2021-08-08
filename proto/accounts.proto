@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 package accounts;
 
 service Accounts {
-    rpc GetAccounts (google.protobuf.Empty) returns (GetAccountsResponse);
+    rpc ListAccounts (ListAccountsRequest) returns (ListAccountsResponse);
     rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
     rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
     rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse);
@@ -28,10 +28,11 @@ message Account {
     google.protobuf.Timestamp updated_at = 12;
 }
 
-message GetAccountsResponse {
+message ListAccountsResponse {
     bool success = 1;
-    optional string message = 2;
     repeated Account accounts = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
 }
 
 message GetAccountResponse {
@@ -66,11 +67,17 @@ message UpdateAccountResponse {
     }
 }
 
+message ListAccountsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
 message GetAccountRequest {
     string user_id = 1;
 }
 
 message CreateAccountRequest {
+    string request_id = 42;
     string global_id = 2;
     string username = 4;
     string avatar = 5;
@@ -81,10 +88,12 @@ message CreateAccountRequest {
 }
 
 message DeleteAccountRequest {
+    string request_id = 42;
     string user_id = 1;
 }
 
 message UpdateAccountRequest {
+    string request_id = 42;
     string user_id = 1;
     optional string global_id = 2;
     optional string public_code = 3;

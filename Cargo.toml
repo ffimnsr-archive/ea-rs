@@ -1,12 +1,25 @@
 [workspace]
 members = [
-    "packages/account",
-    "packages/address",
-    "packages/ea_sql_derive",
-    "packages/project",
+    "packages/*",
 ]
 default-members = [
     "packages/account",
-    "packages/address",
-    "packages/project",    
 ]
+
+[workspace.metadata.migrations.account]
+root = "packages/account/data/migrations"
+
+[workspace.metadata.migrations.account_ext]
+root = "packages/account_ext/data/migrations"
+
+[workspace.metadata.migrations.address]
+root = "packages/address/data/migrations"
+
+[workspace.metadata.migrations.organization]
+root = "packages/organization/data/migrations"
+
+[workspace.metadata.migrations.project]
+root = "packages/project/data/migrations"
+
+[workspace.metadata.migrations.talent_pool]
+root = "packages/talent_pool/data/migrations"
