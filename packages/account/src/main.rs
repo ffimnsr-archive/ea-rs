@@ -1,4 +1,4 @@
-//! This module is the main entrypoint for accounts service.
+//! This module is the main entrypoint for account service.
 
 use std::env;
 use std::time::Duration;
@@ -10,7 +10,7 @@ use uuid::Uuid;
 use db::{Pool, get_db_pool};
 use entities::BaseEntity;
 use entities::account::{RawAccount, Account, AccountPayload};
-use pb::accounts_server::AccountsServer;
+use pb::account_service_server::AccountServiceServer;
 
 use pb::{
     ListAccountsRequest,
@@ -28,19 +28,19 @@ use pb::{
 use crate::entities::MutateEntity;
 
 pub mod pb {
-    tonic::include_proto!("accounts");
+    tonic::include_proto!("account");
 
     pub(crate) const FILE_DESCRIPTOR_SET: &[u8] =
-        tonic::include_file_descriptor_set!("accounts_descriptor");
+        tonic::include_file_descriptor_set!("account_descriptor");
 }
 
 mod db;
 mod entities;
 
-type AccountsResult<T> = Result<Response<T>, Status>;
+type AccountResult<T> = Result<Response<T>, Status>;
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
-pub struct CoreAccounts {
+pub struct CoreAccount {
     pool: Pool,
 }
 
@@ -49,8 +49,8 @@ pub struct PaginationToken {
 }
 
 #[tonic::async_trait]
-impl pb::accounts_server::Accounts for CoreAccounts {
-    async fn list_accounts(&self, req: Request<ListAccountsRequest>) -> AccountsResult<ListAccountsResponse> {
+impl pb::account_service_server::AccountService for CoreAccount {
+    async fn list_accounts(&self, req: Request<ListAccountsRequest>) -> AccountResult<ListAccountsResponse> {
         let data = req.into_inner();
         let total_size = self.count_account_entries().await.unwrap();
 
@@ -90,7 +90,7 @@ impl pb::accounts_server::Accounts for CoreAccounts {
         }
     }
 
-    async fn get_account(&self, req: Request<GetAccountRequest>) -> AccountsResult<GetAccountResponse> {
+    async fn get_account(&self, req: Request<GetAccountRequest>) -> AccountResult<GetAccountResponse> {
         let data = req.into_inner();
         let result = self.get_account(&data).await;
 
@@ -105,7 +105,7 @@ impl pb::accounts_server::Accounts for CoreAccounts {
             })
     }
 
-    async fn create_account(&self, req: Request<CreateAccountRequest>) -> AccountsResult<CreateAccountResponse> {
+    async fn create_account(&self, req: Request<CreateAccountRequest>) -> AccountResult<CreateAccountResponse> {
         let data = req.into_inner();
         let result = self.create_account(&data).await;
 
@@ -120,7 +120,7 @@ impl pb::accounts_server::Accounts for CoreAccounts {
             })
     }
 
-    async fn delete_account(&self, req: Request<DeleteAccountRequest>) -> AccountsResult<DeleteAccountResponse> {
+    async fn delete_account(&self, req: Request<DeleteAccountRequest>) -> AccountResult<DeleteAccountResponse> {
         let data = req.into_inner();
         let result = self.soft_delete_account(&data).await;
 
@@ -135,7 +135,7 @@ impl pb::accounts_server::Accounts for CoreAccounts {
             })
     }
 
-    async fn update_account(&self, req: Request<UpdateAccountRequest>) -> AccountsResult<UpdateAccountResponse> {
+    async fn update_account(&self, req: Request<UpdateAccountRequest>) -> AccountResult<UpdateAccountResponse> {
         let data = req.into_inner();
         let result = self.update_account(&data).await;
 
@@ -151,7 +151,7 @@ impl pb::accounts_server::Accounts for CoreAccounts {
     }
 }
 
-impl CoreAccounts {
+impl CoreAccount {
     fn new(pool: &Pool) -> Self {
         Self { pool: pool.clone() }
     }
@@ -430,9 +430,9 @@ async fn flip_service_status(mut reporter: tonic_health::server::HealthReporter)
         tokio::time::sleep(Duration::from_secs(1)).await;
 
         if iter % 2 == 0 {
-            reporter.set_serving::<AccountsServer<CoreAccounts>>().await;
+            reporter.set_serving::<AccountServiceServer<CoreAccount>>().await;
         } else {
-            reporter.set_not_serving::<AccountsServer<CoreAccounts>>().await;
+            reporter.set_not_serving::<AccountServiceServer<CoreAccount>>().await;
         };
     }
 }
@@ -451,7 +451,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let pool = get_db_pool()?;
 
-    let server = CoreAccounts::new(&pool);
+    let server = CoreAccount::new(&pool);
 
     let addr = "[::1]:8090".parse()?;
     info!("Account service is listening on {}", addr);
@@ -462,7 +462,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
     health_reporter
-        .set_serving::<AccountsServer<CoreAccounts>>()
+        .set_serving::<AccountServiceServer<CoreAccount>>()
         .await;
 
     tokio::spawn(flip_service_status(health_reporter.clone()));
@@ -470,7 +470,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder()
         .add_service(reflection_service)
         .add_service(health_service)
-        .add_service(AccountsServer::new(server))
+        .add_service(AccountServiceServer::new(server))
         .serve(addr)
         .await?;
 

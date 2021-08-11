@@ -3,9 +3,9 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package accounts;
+package account;
 
-service Accounts {
+service AccountService {
     rpc ListAccounts (ListAccountsRequest) returns (ListAccountsResponse);
     rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
     rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
@@ -35,6 +35,11 @@ message ListAccountsResponse {
     int64 total_size = 6;
 }
 
+message ListAccountsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
 message GetAccountResponse {
     bool success = 1;
     oneof data {
@@ -43,37 +48,16 @@ message GetAccountResponse {
     }
 }
 
+message GetAccountRequest {
+    string user_id = 1;
+}
+
 message CreateAccountResponse {
     bool success = 1;
     oneof data {
         string message = 2;
         Account account = 4;
     }
-}
-
-message DeleteAccountResponse {
-    bool success = 1;
-    oneof data {
-        string message = 2;
-        Account account = 4;
-    }
-}
-
-message UpdateAccountResponse {
-    bool success = 1;
-    oneof data {
-        string message = 2;
-        Account account = 4;
-    }
-}
-
-message ListAccountsRequest {
-    int32 page_size = 2;
-    string page_token = 3;
-}
-
-message GetAccountRequest {
-    string user_id = 1;
 }
 
 message CreateAccountRequest {
@@ -87,9 +71,25 @@ message CreateAccountRequest {
     string email = 9;
 }
 
+message DeleteAccountResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Account account = 4;
+    }
+}
+
 message DeleteAccountRequest {
     string request_id = 42;
     string user_id = 1;
+}
+
+message UpdateAccountResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Account account = 4;
+    }
 }
 
 message UpdateAccountRequest {

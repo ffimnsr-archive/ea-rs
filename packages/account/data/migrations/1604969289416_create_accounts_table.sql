@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS public.accounts (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER trigger_set_update_timestamp
 BEFORE UPDATE ON public.accounts
 FOR EACH ROW
-EXECUTE PROCEDURE public.trigger_set_timestamp();
+EXECUTE PROCEDURE public.set_update_timestamp();
 
 CREATE INDEX ix_accounts_created_at
 ON public.accounts USING btree (created_at ASC NULLS LAST);
@@ -29,5 +29,5 @@ ON public.accounts USING btree (id ASC NULLS LAST, created_at ASC NULLS LAST);
 
 -- !DOWN
 DROP INDEX ix_accounts_created_at;
-DROP TRIGGER IF EXISTS set_timestamp ON public.accounts;
+DROP TRIGGER IF EXISTS trigger_set_update_timestamp ON public.accounts;
 DROP TABLE IF EXISTS public.accounts;

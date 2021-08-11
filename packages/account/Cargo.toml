@@ -1,6 +1,6 @@
 [package]
 name = "account_svc"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = ["ffimnsr <ffimnsr@gmail.com>"]
 publish = false
