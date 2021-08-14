@@ -8,7 +8,7 @@ version = "0.1.0"
 
 [[package]]
 name = "account_svc"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "chrono",
@@ -47,6 +47,31 @@ dependencies = [
 [[package]]
 name = "address_svc"
 version = "0.1.0"
+dependencies = [
+ "base64",
+ "chrono",
+ "deadpool-postgres",
+ "dotenv",
+ "ea_sql_derive",
+ "inflector",
+ "log",
+ "nanoid",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-postgres",
+ "tonic",
+ "tonic-build",
+ "tonic-health",
+ "tonic-reflection",
+ "tracing",
+ "tracing-attributes",
+ "tracing-futures",
+ "tracing-subscriber",
+ "uuid",
+]
 
 [[package]]
 name = "adler"

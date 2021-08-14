@@ -28,17 +28,12 @@ pub struct Account {
 }
 
 impl Account {
-    pub fn to_account_payload(&self) -> AccountPayload {
+    pub fn to_payload(&self) -> AccountPayload {
         AccountPayload::from(self)
     }
 }
 
 impl MutateEntity for Account {
-    fn get_required_create_fields() -> Cow<'static, str> {
-        let fields = Self::get_required_create_fields_arr();
-        fields.join(", ").into()
-    }
-
     fn get_required_create_fields_arr() -> Vec<String> {
         let fields = [
             "global_id",
@@ -52,15 +47,6 @@ impl MutateEntity for Account {
         ];
 
         fields.iter().map(|s| s.to_string()).collect()
-    }
-
-    fn create_field_count() -> usize {
-        Self::get_required_create_fields_arr().len()
-     }
-
-    fn get_required_update_fields() -> Cow<'static, str> {
-        let fields = Self::get_required_update_fields_arr();
-        fields.join(", ").into()
     }
 
     fn get_required_update_fields_arr() -> Vec<String> {
@@ -78,10 +64,6 @@ impl MutateEntity for Account {
 
         fields.iter().map(|s| s.to_string()).collect()
     }
-
-    fn update_field_count() -> usize {
-        Self::get_required_update_fields_arr().len()
-     }
 }
 
 impl From<&Account> for AccountPayload {

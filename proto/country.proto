@@ -40,5 +40,5 @@ message GetCountryResponse {
 }
 
 message GetCountryRequest {
-    string user_id = 1;
+    string country_id = 1;
 }

@@ -29,11 +29,25 @@ pub trait BaseEntity {
 }
 
 pub trait MutateEntity {
-    fn get_required_create_fields() -> Cow<'static, str>;
-    fn get_required_create_fields_arr() -> Vec<String>;
-    fn create_field_count() -> usize;
+    fn get_required_create_fields() -> Cow<'static, str> {
+        let fields = Self::get_required_create_fields_arr();
+        fields.join(", ").into()
+    }
 
-    fn get_required_update_fields() -> Cow<'static, str>;
+    fn get_required_create_fields_arr() -> Vec<String>;
+
+    fn create_field_count() -> usize {
+        Self::get_required_create_fields_arr().len()
+    }
+
+    fn get_required_update_fields() -> Cow<'static, str> {
+        let fields = Self::get_required_update_fields_arr();
+        fields.join(", ").into()
+    }
+
     fn get_required_update_fields_arr() -> Vec<String>;
-    fn update_field_count() -> usize;
+
+    fn update_field_count() -> usize {
+        Self::get_required_update_fields_arr().len()
+    }
 }

@@ -65,7 +65,6 @@ pub fn derive_into_base_entity(input: TokenStream) -> TokenStream {
                 let name = stringify!(#struct_name);
                 name
                     .to_snake_case()
-                    .to_plural()
                     .into()
             }
 
