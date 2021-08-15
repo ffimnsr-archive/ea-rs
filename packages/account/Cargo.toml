@@ -31,6 +31,7 @@ nanoid = "0.4"
 base64 = "0.13"
 
 inflector = { git = "https://github.com/fzrepo/inflector", branch = "master" }
+ea_core = { version = "0.1", path = "../ea_core" }
 ea_sql_derive = { version = "0.1", path = "../ea_sql_derive" }
 
 [build-dependencies]

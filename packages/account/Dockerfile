@@ -5,6 +5,7 @@ ENV USER=root
 
 WORKDIR /code/app
 COPY ./packages/account /code/app
+COPY ./packages/ea_core /code/ea_core
 COPY ./packages/ea_sql_derive /code/ea_sql_derive
 COPY ./proto /proto
 RUN rm -rf .cargo \

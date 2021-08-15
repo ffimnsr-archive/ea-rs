@@ -14,6 +14,7 @@ dependencies = [
  "chrono",
  "deadpool-postgres",
  "dotenv",
+ "ea_core",
  "ea_sql_derive",
  "inflector",
  "log",
@@ -52,6 +53,7 @@ dependencies = [
  "chrono",
  "deadpool-postgres",
  "dotenv",
+ "ea_core",
  "ea_sql_derive",
  "inflector",
  "log",
@@ -351,6 +353,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
+name = "ea_core"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "deadpool-postgres",
+ "dotenv",
+ "prost-types",
+ "tokio",
+ "tokio-postgres",
+]
+
+[[package]]
 name = "ea_sql_derive"
 version = "0.1.1"
 dependencies = [
@@ -364,6 +378,10 @@ name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
+
+[[package]]
+name = "event_svc"
+version = "0.1.0"
 
 [[package]]
 name = "failure"
@@ -535,6 +553,10 @@ name = "gimli"
 version = "0.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0a01e0497841a3b2db4f8afa483cce65f7e96a3498bd6c541734792aeac8fe7"
+
+[[package]]
+name = "grand_central_dispatch_svc"
+version = "0.1.0"
 
 [[package]]
 name = "h2"
@@ -865,6 +887,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "notification_svc"
+version = "0.1.0"
+
+[[package]]
 name = "ntapi"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -910,6 +936,10 @@ checksum = "c55827317fb4c08822499848a14237d2874d6f139828893017237e7ab93eb386"
 dependencies = [
  "memchr",
 ]
+
+[[package]]
+name = "offer_svc"
+version = "0.1.0"
 
 [[package]]
 name = "once_cell"

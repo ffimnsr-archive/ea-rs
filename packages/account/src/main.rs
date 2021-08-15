@@ -2,13 +2,12 @@
 
 use std::env;
 use std::time::Duration;
-use entities::MyriadExt;
 use tonic::{transport::Server, Request, Response, Status};
 use log::{error, info, trace, warn};
 use nanoid::nanoid;
 use uuid::Uuid;
-use db::{Pool, get_db_pool};
-use entities::BaseEntity;
+use ea_core::{MyriadExt, BaseEntity, MutateEntity};
+use ea_core::db::{Pool, get_db_pool};
 use entities::account::{RawAccount, Account, AccountPayload};
 use pb::account_service_server::AccountServiceServer;
 
@@ -25,8 +24,6 @@ use pb::{
     UpdateAccountResponse,
 };
 
-use crate::entities::MutateEntity;
-
 pub mod pb {
     tonic::include_proto!("account");
 
@@ -34,7 +31,6 @@ pub mod pb {
         tonic::include_file_descriptor_set!("account_descriptor");
 }
 
-mod db;
 mod entities;
 
 type AccountResult<T> = Result<Response<T>, Status>;
@@ -162,7 +158,7 @@ impl CoreAccount {
 
     fn parse_token(&self, token: &str) -> Option<PaginationToken> {
         if token == "" {
-            error!("The passed token string is empty");
+            error!("The token string is empty");
             return None
         }
 

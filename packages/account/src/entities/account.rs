@@ -4,10 +4,9 @@ use uuid::Uuid;
 use serde::{Serialize, Deserialize};
 use prost_types::Timestamp;
 use tokio_postgres::Row;
+use ea_core::{FromDt, MyriadExt, BaseEntity, MutateEntity};
 use ea_sql_derive::{FromRow, IntoBaseEntity};
 pub use crate::pb::Account as AccountPayload;
-
-use super::{FromDt, MyriadExt, BaseEntity, MutateEntity};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromRow, IntoBaseEntity)]
 pub struct Account {
