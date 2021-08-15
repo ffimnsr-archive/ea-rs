@@ -16,5 +16,5 @@ $$ LANGUAGE plpgsql;
 
 -- !DOWN
 DROP FUNCTION IF EXISTS public.set_update_timestamp;
-DROP SCHEMA IF EXISTS public CASCADE;
 DROP EXTENSION IF EXISTS "uuid-ossp";
+DROP SCHEMA IF EXISTS public CASCADE;
