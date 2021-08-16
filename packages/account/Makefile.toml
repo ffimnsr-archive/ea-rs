@@ -3,28 +3,28 @@ skip_core_tasks = true
 min_version = "0.35.0"
 
 [env]
-ACCOUNT_SVC_VERSION = "${CARGO_MAKE_PROJECT_VERSION}"
+EA_ACCOUNT_VERSION = "${CARGO_MAKE_PROJECT_VERSION}"
 
 [tasks.build]
 script = '''
 docker build --force-rm \
     -f ./Dockerfile \
-    --build-arg service_version=${ACCOUNT_SVC_VERSION} \
+    --build-arg service_version=${EA_ACCOUNT_VERSION} \
     --build-arg build-date=$(date --iso-8601=seconds -u) \
     --build-arg vcs_ref=$(git rev-parse --short HEAD) \
-    -t registry.gitlab.com/osslocal/account_svc:${ACCOUNT_SVC_VERSION} \
-    -t account_svc:${ACCOUNT_SVC_VERSION} ../..
+    -t registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION} \
+    -t ea_account:${EA_ACCOUNT_VERSION} ../..
 '''
 
 [tasks.push]
 script = '''
-docker push registry.gitlab.com/osslocal/account_svc:${ACCOUNT_SVC_VERSION}
+docker push registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
 '''
 
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-docker pull registry.gitlab.com/osslocal/account_svc:${ACCOUNT_SVC_VERSION}
+docker pull registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
 docker images
 EOF
 '''
@@ -37,19 +37,19 @@ docker run -d --name graph-server \
     -p 28090:8090/tcp \
     -e DSN=postgres://ea:postgres@localhost:5432/ea_account?sslmode=disable \
     --restart always \
-    registry.gitlab.com/osslocal/account_svc:${ACCOUNT_SVC_VERSION}
+    registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
 EOF
 '''
 
 [tasks.push-manual]
 script = '''
-docker save account_svc:${ACCOUNT_SVC_VERSION} | pv | bzip2 > ./images/account_svc.tar.bz2
-rsync -avzP ./images/account_svc.tar.bz2 sandbox:~/account_svc.tar.bz2
+docker save ea_account:${EA_ACCOUNT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
+rsync -avzP ./images/ea_account.tar.bz2 sandbox:~/ea_account.tar.bz2
 '''
 
 [tasks.load-manual]
 script = '''
-ssh -T sandbox "pv ~/account_svc.tar.bz2 | bunzip2 | docker load"
+ssh -T sandbox "pv ~/ea_account.tar.bz2 | bunzip2 | docker load"
 '''
 
 [tasks.deploy]

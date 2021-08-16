@@ -32,17 +32,17 @@ LABEL maintainer="ffimnsr <ffimnsr@gmail.com>"
 LABEL org.label-schema.description="${build_date}"
 LABEL org.label-schema.description="This service provides grpc endpoint for account management"
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name="ea.account_svc"
+LABEL org.label-schema.name="ea_account"
 LABEL org.label-schema.version="${service_version}"
 LABEL org.label-schema.usage="https://github.com/ffimnsr/ea-rs/blob/master/README.md"
 LABEL org.label-schema.url="https://se-same.com"
 LABEL org.label-schema.vcs-url="https://github.com/ffimnsr/ea-rs"
 LABEL org.label-schema.vcs-ref="${vcs_ref}"
 LABEL org.label-schema.vendor="Where It All Started"
-LABEL org.label-schema.docker.cmd="docker run -d -p 28090:8090 account_svc"
+LABEL org.label-schema.docker.cmd="docker run -d -p 28090:8090 ea_account"
 
 RUN apt-get update && apt-get install -y libssl1.1 libc6 libgcc1 \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /code/app/target/release/account_svc /usr/bin/account_svc
+COPY --from=builder /code/app/target/release/ea_account /usr/bin/ea_account
 EXPOSE 8090
-ENTRYPOINT [ "/usr/bin/account_svc" ]
+ENTRYPOINT [ "/usr/bin/ea_account" ]
