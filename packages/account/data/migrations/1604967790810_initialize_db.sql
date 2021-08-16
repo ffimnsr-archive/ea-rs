@@ -1,8 +1,6 @@
 -- # Put the your SQL below migration seperator.
 -- !UP
 CREATE SCHEMA IF NOT EXISTS public;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO public;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
