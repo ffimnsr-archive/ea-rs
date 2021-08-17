@@ -3,76 +3,12 @@
 version = 3
 
 [[package]]
-name = "account_ext_svc"
-version = "0.1.0"
-
-[[package]]
-name = "account_svc"
-version = "0.1.1"
-dependencies = [
- "base64",
- "chrono",
- "deadpool-postgres",
- "dotenv",
- "ea_core",
- "ea_sql_derive",
- "inflector",
- "log",
- "nanoid",
- "prost",
- "prost-types",
- "serde",
- "serde_json",
- "tokio",
- "tokio-postgres",
- "tonic",
- "tonic-build",
- "tonic-health",
- "tonic-reflection",
- "tracing",
- "tracing-attributes",
- "tracing-futures",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3e61f2b7f93d2c7d2b08263acaa4a363b3e276806c68af6134c44f523bf1aacd"
 dependencies = [
  "gimli",
-]
-
-[[package]]
-name = "address_svc"
-version = "0.1.0"
-dependencies = [
- "base64",
- "chrono",
- "deadpool-postgres",
- "dotenv",
- "ea_core",
- "ea_sql_derive",
- "inflector",
- "log",
- "nanoid",
- "prost",
- "prost-types",
- "serde",
- "serde_json",
- "tokio",
- "tokio-postgres",
- "tonic",
- "tonic-build",
- "tonic-health",
- "tonic-reflection",
- "tracing",
- "tracing-attributes",
- "tracing-futures",
- "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]
@@ -353,12 +289,75 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
-name = "ea_core"
+name = "ea_account"
+version = "0.1.2"
+dependencies = [
+ "chrono",
+ "dotenv",
+ "ea_core",
+ "ea_sql_derive",
+ "inflector",
+ "log",
+ "nanoid",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-postgres",
+ "tonic",
+ "tonic-build",
+ "tonic-health",
+ "tonic-reflection",
+ "tracing",
+ "tracing-attributes",
+ "tracing-futures",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
+name = "ea_account_ext"
+version = "0.1.0"
+
+[[package]]
+name = "ea_address"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "deadpool-postgres",
  "dotenv",
+ "ea_core",
+ "ea_sql_derive",
+ "inflector",
+ "log",
+ "nanoid",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-postgres",
+ "tonic",
+ "tonic-build",
+ "tonic-health",
+ "tonic-reflection",
+ "tracing",
+ "tracing-attributes",
+ "tracing-futures",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
+name = "ea_core"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "chrono",
+ "deadpool-postgres",
+ "dotenv",
+ "log",
  "prost-types",
  "tokio",
  "tokio-postgres",

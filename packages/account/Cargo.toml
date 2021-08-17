@@ -9,7 +9,6 @@ homepage = "https://vastorigins.org"
 readme = "README.md"
 
 [dependencies]
-deadpool-postgres = "0.7"
 dotenv = "0.15"
 log = "0.4"
 tracing = "0.1"
@@ -28,7 +27,6 @@ tonic-reflection = "0.2"
 tonic-health = "0.4"
 uuid = { version = "0.8", features = ["serde", "v4"] }
 nanoid = "0.4"
-base64 = "0.13"
 
 inflector = { git = "https://github.com/fzrepo/inflector", branch = "master" }
 ea_core = { version = "0.1", path = "../ea_core" }

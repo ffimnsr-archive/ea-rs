@@ -7,6 +7,7 @@ use log::{error, info, trace, warn};
 use nanoid::nanoid;
 use uuid::Uuid;
 use ea_core::{MyriadExt, BaseEntity, MutateEntity};
+use ea_core::token::{generate_token, parse_token};
 use ea_core::db::{Pool, get_db_pool};
 use entities::account::{RawAccount, Account, AccountPayload};
 use pb::account_service_server::AccountServiceServer;
@@ -33,20 +34,16 @@ pub mod pb {
 
 mod entities;
 
-type AccountResult<T> = Result<Response<T>, Status>;
+type ServiceResult<T> = Result<Response<T>, Status>;
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
-pub struct CoreAccount {
+pub struct CoreImpl {
     pool: Pool,
 }
 
-pub struct PaginationToken {
-    offset: i64,
-}
-
 #[tonic::async_trait]
-impl pb::account_service_server::AccountService for CoreAccount {
-    async fn list_accounts(&self, req: Request<ListAccountsRequest>) -> AccountResult<ListAccountsResponse> {
+impl pb::account_service_server::AccountService for CoreImpl {
+    async fn list_accounts(&self, req: Request<ListAccountsRequest>) -> ServiceResult<ListAccountsResponse> {
         let data = req.into_inner();
         let total_size = self.count_account_entries().await.unwrap();
 
@@ -62,7 +59,7 @@ impl pb::account_service_server::AccountService for CoreAccount {
             .map(|data| {
                 let last_entry = data.last().clone().unwrap();
                 let is_more_entries = total_size >= last_entry.row_num + page_size;
-                let next_page_token = if is_more_entries { self.generate_token(last_entry.row_num) } else { String::new() };
+                let next_page_token = if is_more_entries { generate_token(last_entry.row_num) } else { String::new() };
 
                 Response::new(ListAccountsResponse {
                     success: true,
@@ -86,7 +83,7 @@ impl pb::account_service_server::AccountService for CoreAccount {
         }
     }
 
-    async fn get_account(&self, req: Request<GetAccountRequest>) -> AccountResult<GetAccountResponse> {
+    async fn get_account(&self, req: Request<GetAccountRequest>) -> ServiceResult<GetAccountResponse> {
         let data = req.into_inner();
         let result = self.get_account(&data).await;
 
@@ -101,7 +98,7 @@ impl pb::account_service_server::AccountService for CoreAccount {
             })
     }
 
-    async fn create_account(&self, req: Request<CreateAccountRequest>) -> AccountResult<CreateAccountResponse> {
+    async fn create_account(&self, req: Request<CreateAccountRequest>) -> ServiceResult<CreateAccountResponse> {
         let data = req.into_inner();
         let result = self.create_account(&data).await;
 
@@ -116,7 +113,7 @@ impl pb::account_service_server::AccountService for CoreAccount {
             })
     }
 
-    async fn delete_account(&self, req: Request<DeleteAccountRequest>) -> AccountResult<DeleteAccountResponse> {
+    async fn delete_account(&self, req: Request<DeleteAccountRequest>) -> ServiceResult<DeleteAccountResponse> {
         let data = req.into_inner();
         let result = self.soft_delete_account(&data).await;
 
@@ -131,7 +128,7 @@ impl pb::account_service_server::AccountService for CoreAccount {
             })
     }
 
-    async fn update_account(&self, req: Request<UpdateAccountRequest>) -> AccountResult<UpdateAccountResponse> {
+    async fn update_account(&self, req: Request<UpdateAccountRequest>) -> ServiceResult<UpdateAccountResponse> {
         let data = req.into_inner();
         let result = self.update_account(&data).await;
 
@@ -147,26 +144,9 @@ impl pb::account_service_server::AccountService for CoreAccount {
     }
 }
 
-impl CoreAccount {
+impl CoreImpl {
     fn new(pool: &Pool) -> Self {
         Self { pool: pool.clone() }
-    }
-
-    fn generate_token(&self, offset: i64) -> String {
-        base64::encode(offset.to_string())
-    }
-
-    fn parse_token(&self, token: &str) -> Option<PaginationToken> {
-        if token == "" {
-            error!("The token string is empty");
-            return None
-        }
-
-        let raw_token = base64::decode(token).ok()?;
-        let raw_token  = String::from_utf8_lossy(&raw_token).into_owned();
-        let offset = raw_token.parse::<i64>().ok()?;
-
-        Some(PaginationToken { offset })
     }
 
     async fn count_account_entries(&self) -> DbResult<i64> {
@@ -191,7 +171,7 @@ impl CoreAccount {
     async fn list_accounts(&self, data: &ListAccountsRequest, page_size: i64) -> DbResult<Vec<RawAccount>> {
         let conn = self.pool.get().await?;
 
-        if let Some(token_context) = self.parse_token(&data.page_token) {
+        if let Some(token_context) = parse_token(&data.page_token) {
             let query = format!(
                 "SELECT row_num, {} FROM (
                     SELECT ROW_NUMBER() OVER (ORDER BY created_at) AS row_num, {} FROM {} WHERE is_deleted = false ORDER BY created_at ASC
@@ -426,9 +406,9 @@ async fn flip_service_status(mut reporter: tonic_health::server::HealthReporter)
         tokio::time::sleep(Duration::from_secs(1)).await;
 
         if iter % 2 == 0 {
-            reporter.set_serving::<AccountServiceServer<CoreAccount>>().await;
+            reporter.set_serving::<AccountServiceServer<CoreImpl>>().await;
         } else {
-            reporter.set_not_serving::<AccountServiceServer<CoreAccount>>().await;
+            reporter.set_not_serving::<AccountServiceServer<CoreImpl>>().await;
         };
     }
 }
@@ -447,8 +427,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let pool = get_db_pool()?;
 
-    let server = CoreAccount::new(&pool);
-
     let addr = "[::1]:8090".parse()?;
     info!("Account service is listening on {}", addr);
 
@@ -458,7 +436,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
     health_reporter
-        .set_serving::<AccountServiceServer<CoreAccount>>()
+        .set_serving::<AccountServiceServer<CoreImpl>>()
         .await;
 
     tokio::spawn(flip_service_status(health_reporter.clone()));
@@ -466,7 +444,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder()
         .add_service(reflection_service)
         .add_service(health_service)
-        .add_service(AccountServiceServer::new(server))
+        .add_service(AccountServiceServer::new(CoreImpl::new(&pool)))
         .serve(addr)
         .await?;
 
