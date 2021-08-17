@@ -1,4 +1,4 @@
-#[derive(Default, Clone, Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct PostgresQueryBuilder {
     sql: String,
     bind_idx: u32,

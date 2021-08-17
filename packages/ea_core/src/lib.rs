@@ -3,6 +3,7 @@ use prost_types::Timestamp;
 use std::borrow::Cow;
 
 pub mod db;
+pub mod token;
 
 pub trait FromDt: Sized {
     fn from_utc(dt: DateTime<Utc>) -> Self;
