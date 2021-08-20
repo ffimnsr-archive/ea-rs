@@ -1,6 +1,16 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package offer;
+message Offer {
+    string id = 1;
+    string user_id = 2;
+    string employer_organization_id = 3;
+    string employer_id = 4;
+    bool is_accepted = 5;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+}

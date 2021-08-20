@@ -1,9 +1,9 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-
-package address;
 
 service AddressService {
     rpc ListAddresses (ListAddressesRequest) returns (ListAddressesResponse);
@@ -25,6 +25,11 @@ message Address {
     google.protobuf.Timestamp updated_at = 12;
 }
 
+message ListAddressesRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
 message ListAddressesResponse {
     bool success = 1;
     repeated Address addresses = 4;
@@ -32,24 +37,11 @@ message ListAddressesResponse {
     int64 total_size = 6;
 }
 
-message ListAddressesRequest {
-    int32 page_size = 2;
-    string page_token = 3;
-}
-
-message GetAddressResponse {
-    bool success = 1;
-    oneof data {
-        string message = 2;
-        Address address = 4;
-    }
-}
-
 message GetAddressRequest {
     string address_id = 1;
 }
 
-message CreateAddressResponse {
+message GetAddressResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -67,7 +59,7 @@ message CreateAddressRequest {
     string postal_code = 7;
 }
 
-message DeleteAddressResponse {
+message CreateAddressResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -80,7 +72,7 @@ message DeleteAddressRequest {
     string address_id = 1;
 }
 
-message UpdateAddressResponse {
+message DeleteAddressResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -97,4 +89,12 @@ message UpdateAddressRequest {
     optional string state = 5;
     optional string country = 6;
     optional string postal_code = 7;
+}
+
+message UpdateAddressResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Address address = 4;
+    }
 }

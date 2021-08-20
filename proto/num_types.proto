@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package ea;
+
+message BigDecimal {
+    uint32 scale = 1;
+    uint32 precision = 2;
+    bytes value = 3;
+}

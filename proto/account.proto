@@ -1,9 +1,9 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-
-package account;
 
 service AccountService {
     rpc ListAccounts (ListAccountsRequest) returns (ListAccountsResponse);
@@ -28,6 +28,11 @@ message Account {
     google.protobuf.Timestamp updated_at = 12;
 }
 
+message ListAccountsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
 message ListAccountsResponse {
     bool success = 1;
     repeated Account accounts = 4;
@@ -35,24 +40,11 @@ message ListAccountsResponse {
     int64 total_size = 6;
 }
 
-message ListAccountsRequest {
-    int32 page_size = 2;
-    string page_token = 3;
-}
-
-message GetAccountResponse {
-    bool success = 1;
-    oneof data {
-        string message = 2;
-        Account account = 4;
-    }
-}
-
 message GetAccountRequest {
     string user_id = 1;
 }
 
-message CreateAccountResponse {
+message GetAccountResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -71,7 +63,7 @@ message CreateAccountRequest {
     string email = 9;
 }
 
-message DeleteAccountResponse {
+message CreateAccountResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -84,7 +76,7 @@ message DeleteAccountRequest {
     string user_id = 1;
 }
 
-message UpdateAccountResponse {
+message DeleteAccountResponse {
     bool success = 1;
     oneof data {
         string message = 2;
@@ -104,4 +96,12 @@ message UpdateAccountRequest {
     optional string middle_name = 8;
     optional string email = 9;
     optional bool email_verified = 10;
+}
+
+message UpdateAccountResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Account account = 4;
+    }
 }

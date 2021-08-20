@@ -1,6 +1,19 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package work_experience;
+message WorkExperience {
+    string id = 1;
+    string user_id = 2;
+    string title = 3;
+    string organization = 4;
+    string location = 5;
+    int64 from_date = 6;
+    int64 to_date = 7;
+    string description = 8;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+}

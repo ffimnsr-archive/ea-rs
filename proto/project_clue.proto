@@ -5,12 +5,13 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-message SitePreference {
+message ProjectClue {
     string id = 1;
-    string user_id = 2;
-    bool is_opt_in_marketing = 3;
-    bool is_opt_in_usage_statistics = 4;
-    bool is_opt_in_experimental = 5;
+    string project_id = 2;
+    string requirements = 3;
+    string environments = 4;
+    string repository_http_url = 5;
+    string repository_ssh_url = 6;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
 }

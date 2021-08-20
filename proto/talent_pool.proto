@@ -1,6 +1,13 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package talent_pool;
+message TalentPool {
+    string id = 1;
+    string user_id = 2;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+}

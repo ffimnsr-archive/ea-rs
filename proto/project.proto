@@ -1,6 +1,18 @@
 syntax = "proto3";
 
+package ea;
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package project;
+message Project {
+    string id = 1;
+    string public_code = 2;
+    string name = 3;
+    string description = 4;
+    string parent_organization_id = 5;
+    string managed_by_id = 6;
+    string created_by_id = 7;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+}
