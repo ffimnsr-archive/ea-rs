@@ -12,19 +12,25 @@ docker build --force-rm \
     --build-arg service_version=${EA_ACCOUNT_VERSION} \
     --build-arg build-date=$(date --iso-8601=seconds -u) \
     --build-arg vcs_ref=$(git rev-parse --short HEAD) \
-    -t registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION} \
-    -t ea_account:${EA_ACCOUNT_VERSION} ../..
+    -t 0x61c88647/ea_account:${EA_ACCOUNT_VERSION} \
+    -t 0x61c88647/ea_account:latest ../..
 '''
 
 [tasks.push]
 script = '''
-docker push registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
+docker image push -a 0x61c88647/ea_account
+'''
+
+[tasks.clean]
+script = '''
+docker system prune --volumes -f
+docker image prune -a --filter="until=1h" --filter "label=org.label-schema.name=ea_account" -f
 '''
 
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-docker pull registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
+docker pull 0x61c88647/ea_account:${EA_ACCOUNT_VERSION}
 docker images
 EOF
 '''
@@ -32,18 +38,18 @@ EOF
 [tasks.run]
 script = '''
 ssh -T sandbox << EOF
-docker stop graph-server && docker rm graph-server
-docker run -d --name graph-server \
-    -p 28090:8090/tcp \
+docker stop account-server && docker rm account-server
+docker run -d --name account-server \
+    -p 8010:8010/tcp \
     -e DSN=postgres://ea:postgres@localhost:5432/ea_account?sslmode=disable \
     --restart always \
-    registry.gitlab.com/osslocal/ea_account:${EA_ACCOUNT_VERSION}
+    0x61c88647/ea_account:${EA_ACCOUNT_VERSION}
 EOF
 '''
 
 [tasks.push-manual]
 script = '''
-docker save ea_account:${EA_ACCOUNT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
+docker save 0x61c88647/ea_account:${EA_ACCOUNT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
 rsync -avzP ./images/ea_account.tar.bz2 sandbox:~/ea_account.tar.bz2
 '''
 
@@ -53,4 +59,4 @@ ssh -T sandbox "pv ~/ea_account.tar.bz2 | bunzip2 | docker load"
 '''
 
 [tasks.deploy]
-dependencies = [ "build", "push", "load", "run" ]
+dependencies = [ "build", "push", "clean" ]

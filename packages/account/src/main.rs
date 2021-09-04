@@ -427,7 +427,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let pool = get_db_pool()?;
 
-    let addr = "[::1]:8090".parse()?;
+    let addr = "[::1]8010".parse()?;
     info!("Account service is listening on {}", addr);
 
     let reflection_service = tonic_reflection::server::Builder::configure()

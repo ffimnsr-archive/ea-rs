@@ -4,9 +4,9 @@ FROM rust:1.54 AS base
 ENV USER=root
 
 WORKDIR /code/app
-COPY ./packages/account /code/app
 COPY ./packages/ea_core /code/ea_core
 COPY ./packages/ea_sql_derive /code/ea_sql_derive
+COPY ./packages/account /code/app
 COPY ./proto /proto
 RUN rm -rf .cargo \
     && mkdir -p .cargo \
@@ -39,10 +39,10 @@ LABEL org.label-schema.url="https://se-same.com"
 LABEL org.label-schema.vcs-url="https://github.com/ffimnsr/ea-rs"
 LABEL org.label-schema.vcs-ref="${vcs_ref}"
 LABEL org.label-schema.vendor="Where It All Started"
-LABEL org.label-schema.docker.cmd="docker run -d -p 28090:8090 ea_account"
+LABEL org.label-schema.docker.cmd="docker run -d -p 8010:8010 ea_account"
 
 RUN apt-get update && apt-get install -y libssl1.1 libc6 libgcc1 \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /code/app/target/release/ea_account /usr/bin/ea_account
-EXPOSE 8090
+EXPOSE 8010
 ENTRYPOINT [ "/usr/bin/ea_account" ]
