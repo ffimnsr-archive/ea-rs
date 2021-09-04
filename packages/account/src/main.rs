@@ -26,7 +26,7 @@ use pb::{
 };
 
 pub mod pb {
-    tonic::include_proto!("account");
+    tonic::include_proto!("ea");
 
     pub(crate) const FILE_DESCRIPTOR_SET: &[u8] =
         tonic::include_file_descriptor_set!("account_descriptor");
@@ -427,7 +427,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let pool = get_db_pool()?;
 
-    let addr = "[::1]8010".parse()?;
+    let addr = "[::]:8010".parse()?;
     info!("Account service is listening on {}", addr);
 
     let reflection_service = tonic_reflection::server::Builder::configure()
