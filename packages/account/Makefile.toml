@@ -3,16 +3,16 @@ skip_core_tasks = true
 min_version = "0.35.0"
 
 [env]
-EA_ACCOUNT_VERSION = "${CARGO_MAKE_PROJECT_VERSION}"
+PROJECT_VERSION = "${CARGO_MAKE_PROJECT_VERSION}"
 
 [tasks.build]
 script = '''
 docker build --force-rm \
     -f ./Dockerfile \
-    --build-arg service_version=${EA_ACCOUNT_VERSION} \
+    --build-arg service_version=${PROJECT_VERSION} \
     --build-arg build-date=$(date --iso-8601=seconds -u) \
     --build-arg vcs_ref=$(git rev-parse --short HEAD) \
-    -t 0x61c88647/ea_account:${EA_ACCOUNT_VERSION} \
+    -t 0x61c88647/ea_account:${PROJECT_VERSION} \
     -t 0x61c88647/ea_account:latest ../..
 '''
 
@@ -30,7 +30,7 @@ docker image prune -a --filter="until=1h" --filter "label=org.label-schema.name=
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-docker pull 0x61c88647/ea_account:${EA_ACCOUNT_VERSION}
+docker pull 0x61c88647/ea_account:${PROJECT_VERSION}
 docker images
 EOF
 '''
@@ -43,13 +43,13 @@ docker run -d --name account-server \
     -p 8010:8010/tcp \
     -e DSN=postgres://ea:postgres@localhost:5432/ea_account?sslmode=disable \
     --restart always \
-    0x61c88647/ea_account:${EA_ACCOUNT_VERSION}
+    0x61c88647/ea_account:${PROJECT_VERSION}
 EOF
 '''
 
 [tasks.push-manual]
 script = '''
-docker save 0x61c88647/ea_account:${EA_ACCOUNT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
+docker save 0x61c88647/ea_account:${PROJECT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
 rsync -avzP ./images/ea_account.tar.bz2 sandbox:~/ea_account.tar.bz2
 '''
 
