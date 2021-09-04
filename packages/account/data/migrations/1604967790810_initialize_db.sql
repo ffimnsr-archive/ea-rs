@@ -2,6 +2,8 @@
 -- !UP
 CREATE SCHEMA IF NOT EXISTS public;
 
+GRANT ALL ON SCHEMA public TO ea;
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE OR REPLACE FUNCTION public.set_update_timestamp()
