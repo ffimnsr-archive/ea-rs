@@ -1,12 +1,11 @@
 //! This module is the main entrypoint for account service.
 
 use std::env;
-use std::time::Duration;
 use tonic::{transport::Server, Request, Response, Status};
 use log::{error, info, trace, warn};
 use nanoid::nanoid;
 use uuid::Uuid;
-use ea_core::{MyriadExt, BaseEntity, MutateEntity};
+use ea_core::{BaseEntity, MutateEntity, MyriadExt, flip_service_status};
 use ea_core::token::{generate_token, parse_token};
 use ea_core::db::{Pool, get_db_pool};
 use entities::account::{RawAccount, Account, AccountPayload};
@@ -399,20 +398,6 @@ impl CoreImpl {
     }
 }
 
-async fn flip_service_status(mut reporter: tonic_health::server::HealthReporter) {
-    let mut iter = 0u64;
-    loop {
-        iter += 1;
-        tokio::time::sleep(Duration::from_secs(1)).await;
-
-        if iter % 2 == 0 {
-            reporter.set_serving::<AccountServiceServer<CoreImpl>>().await;
-        } else {
-            reporter.set_not_serving::<AccountServiceServer<CoreImpl>>().await;
-        };
-    }
-}
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv::dotenv().ok();
@@ -439,7 +424,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .set_serving::<AccountServiceServer<CoreImpl>>()
         .await;
 
-    tokio::spawn(flip_service_status(health_reporter.clone()));
+    tokio::spawn(flip_service_status::<AccountServiceServer<CoreImpl>>(health_reporter.clone()));
 
     Server::builder()
         .add_service(reflection_service)
