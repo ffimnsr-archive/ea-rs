@@ -1,6 +1,8 @@
 use chrono::{DateTime, Utc};
 use prost_types::Timestamp;
+use tonic::transport::NamedService;
 use std::borrow::Cow;
+use tokio::time::Duration;
 
 pub mod db;
 pub mod token;
@@ -50,6 +52,20 @@ pub trait MutateEntity {
 
     fn update_field_count() -> usize {
         Self::get_required_update_fields_arr().len()
+    }
+}
+
+pub async fn flip_service_status<U: NamedService>(mut reporter: tonic_health::server::HealthReporter) {
+    let mut iter = 0u64;
+    loop {
+        iter += 1;
+        tokio::time::sleep(Duration::from_secs(1)).await;
+
+        if iter % 2 == 0 {
+            reporter.set_serving::<U>().await;
+        } else {
+            reporter.set_not_serving::<U>().await;
+        };
     }
 }
 
