@@ -2,19 +2,19 @@ version: '3.9'
 services:
     postgres:
         image: postgres:14beta2-buster
-        container_name: svc_postgres
+        container_name: postgres
         restart: always
         environment:
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_USER=ea
-            - POSTGRES_DB=ea
+            - POSTGRES_PASSWORD=VGtHq5vCyXhF4RztKxySAzjn
+            - POSTGRES_USER=postgres
+            - POSTGRES_DB=postgres
         volumes:
             - db-data:/var/lib/postgresql/data
         ports:
-            - 5432:5432/tcp
+            - 25432:5432/tcp
     pgadmin:
         image: dpage/pgadmin4:5.6
-        container_name: svc_pgadmin
+        container_name: pgadmin
         restart: always
         environment:
             - PGADMIN_DEFAULT_EMAIL=postgres@localhost.dev
@@ -22,12 +22,27 @@ services:
             - PGADMIN_LISTEN_ADDRESS=0.0.0.0
             - PGADMIN_LISTEN_PORT=5480
         ports:
-            - 5480:5480/tcp
+            - 25480:5480/tcp
+    vector-aggregator:
+        image: timberio/vector:0.15.2-debian
+        container_name: vector-aggregator
+        restart: always
+        command: --config /etc/vector/vector.yaml
+        volumes:
+            - ./vector.yaml:/etc/vector/vector.yaml:ro
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - vector-data:/var/lib/vector
+        ports:
+            - 28686:8686/tcp
+            - 29000:9000/tcp
+            - 29090:9090/tcp
+
 
 volumes:
     db-data:
+    vector-data:
 
 networks:
     default:
         external: true
-        name: ea-intranet
+        name: sandbox-intranet
