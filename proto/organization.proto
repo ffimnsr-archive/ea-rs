@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service OrganizationService {
+    rpc ListOrganizations (ListOrganizationsRequest) returns (ListOrganizationsResponse);
+    rpc GetOrganization (GetOrganizationRequest) returns (GetOrganizationResponse);
+    rpc CreateOrganization (CreateOrganizationRequest) returns (CreateOrganizationResponse);
+    rpc DeleteOrganization (DeleteOrganizationRequest) returns (DeleteOrganizationResponse);
+    rpc UpdateOrganization (UpdateOrganizationRequest) returns (UpdateOrganizationResponse);
+}
+
 message Organization {
     string id = 1;
     string name = 2;
@@ -13,4 +21,74 @@ message Organization {
     string created_by_id = 5;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListOrganizationsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListOrganizationsResponse {
+    bool success = 1;
+    repeated Organization organizations = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetOrganizationRequest {
+    string organization_id = 1;
+}
+
+message GetOrganizationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Organization organization = 4;
+    }
+}
+
+message CreateOrganizationRequest {
+    string request_id = 42;
+    string name = 2;
+    string description = 3;
+    string managed_by_id = 4;
+    string created_by_id = 5;
+}
+
+message CreateOrganizationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Organization organization = 4;
+    }
+}
+
+message DeleteOrganizationRequest {
+    string request_id = 42;
+    string organization_id = 1;
+}
+
+message DeleteOrganizationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Organization organization = 4;
+    }
+}
+
+message UpdateOrganizationRequest {
+    string request_id = 42;
+    string organization_id = 1;
+    optional string name = 2;
+    optional string description = 3;
+    optional string managed_by_id = 4;
+    optional string created_by_id = 5;
+}
+
+message UpdateOrganizationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Organization organization = 4;
+    }
 }

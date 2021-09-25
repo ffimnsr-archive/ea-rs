@@ -6,6 +6,14 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "num_types.proto";
 
+service WithdrawalRequestService {
+    rpc ListWithdrawals (ListWithdrawalsRequest) returns (ListWithdrawalsResponse);
+    rpc GetWithdrawal (GetWithdrawalRequest) returns (GetWithdrawalResponse);
+    rpc CreateWithdrawal (CreateWithdrawalRequest) returns (CreateWithdrawalResponse);
+    rpc DeleteWithdrawal (DeleteWithdrawalRequest) returns (DeleteWithdrawalResponse);
+    rpc UpdateWithdrawal (UpdateWithdrawalRequest) returns (UpdateWithdrawalResponse);
+}
+
 message WithdrawalRequest {
     string id = 1;
     string user_id = 2;
@@ -17,4 +25,80 @@ message WithdrawalRequest {
     string status = 8;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListWithdrawalsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListWithdrawalsResponse {
+    bool success = 1;
+    repeated Withdrawal withdrawals = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetWithdrawalRequest {
+    string withdrawal_id = 1;
+}
+
+message GetWithdrawalResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Withdrawal withdrawal = 4;
+    }
+}
+
+message CreateWithdrawalRequest {
+    string request_id = 42;
+    string user_id = 2;
+    BigDecimal amount = 3;
+    string reference_no = 4;
+    string remarks = 5;
+    string approved_by_id = 6;
+    string approved_at = 7;
+    string status = 8;
+}
+
+message CreateWithdrawalResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Withdrawal withdrawal = 4;
+    }
+}
+
+message DeleteWithdrawalRequest {
+    string request_id = 42;
+    string withdrawal_id = 1;
+}
+
+message DeleteWithdrawalResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Withdrawal withdrawal = 4;
+    }
+}
+
+message UpdateWithdrawalRequest {
+    string request_id = 42;
+    string withdrawal_id = 1;
+    optional string user_id = 2;
+    optional BigDecimal amount = 3;
+    optional string reference_no = 4;
+    optional string remarks = 5;
+    optional string approved_by_id = 6;
+    optional string approved_at = 7;
+    optional string status = 8;
+}
+
+message UpdateWithdrawalResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Withdrawal withdrawal = 4;
+    }
 }

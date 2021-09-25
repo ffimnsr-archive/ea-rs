@@ -5,10 +5,84 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service RankService {
+    rpc ListRanks (ListRanksRequest) returns (ListRanksResponse);
+    rpc GetRank (GetRankRequest) returns (GetRankResponse);
+    rpc CreateRank (CreateRankRequest) returns (CreateRankResponse);
+    rpc DeleteRank (DeleteRankRequest) returns (DeleteRankResponse);
+    rpc UpdateRank (UpdateRankRequest) returns (UpdateRankResponse);
+}
+
 message Rank {
     string id = 1;
     string name = 2;
     string description = 3;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListRanksRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListRanksResponse {
+    bool success = 1;
+    repeated Rank Ranks = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetRankRequest {
+    string rank_id = 1;
+}
+
+message GetRankResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Rank rank = 4;
+    }
+}
+
+message CreateRankRequest {
+    string request_id = 42;
+    string name = 2;
+    string description = 3;
+}
+
+message CreateRankResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Rank rank = 4;
+    }
+}
+
+message DeleteRankRequest {
+    string request_id = 42;
+    string rank_id = 1;
+}
+
+message DeleteRankResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Rank rank = 4;
+    }
+}
+
+message UpdateRankRequest {
+    string request_id = 42;
+    string rank_id = 1;
+    optional string name = 2;
+    optional string description = 3;
+}
+
+message UpdateRankResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Rank rank = 4;
+    }
 }

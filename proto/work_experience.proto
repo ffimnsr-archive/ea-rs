@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service WorkExperienceService {
+    rpc ListWorkExperiences (ListWorkExperiencesRequest) returns (ListWorkExperiencesResponse);
+    rpc GetWorkExperience (GetWorkExperienceRequest) returns (GetWorkExperienceResponse);
+    rpc CreateWorkExperience (CreateWorkExperienceRequest) returns (CreateWorkExperienceResponse);
+    rpc DeleteWorkExperience (DeleteWorkExperienceRequest) returns (DeleteWorkExperienceResponse);
+    rpc UpdateWorkExperience (UpdateWorkExperienceRequest) returns (UpdateWorkExperienceResponse);
+}
+
 message WorkExperience {
     string id = 1;
     string user_id = 2;
@@ -16,4 +24,80 @@ message WorkExperience {
     string description = 8;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListWorkExperiencesRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListWorkExperiencesResponse {
+    bool success = 1;
+    repeated WorkExperience work_experiences = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetWorkExperienceRequest {
+    string work_experience_id = 1;
+}
+
+message GetWorkExperienceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkExperience work_experience = 4;
+    }
+}
+
+message CreateWorkExperienceRequest {
+    string request_id = 42;
+    string user_id = 2;
+    string title = 3;
+    string organization = 4;
+    string location = 5;
+    int64 from_date = 6;
+    int64 to_date = 7;
+    string description = 8;
+}
+
+message CreateWorkExperienceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkExperience work_experience = 4;
+    }
+}
+
+message DeleteWorkExperienceRequest {
+    string request_id = 42;
+    string work_experience_id = 1;
+}
+
+message DeleteWorkExperienceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkExperience work_experience = 4;
+    }
+}
+
+message UpdateWorkExperienceRequest {
+    string request_id = 42;
+    string work_experience_id = 1;
+    optional string user_id = 2;
+    optional string title = 3;
+    optional string organization = 4;
+    optional string location = 5;
+    optional int64 from_date = 6;
+    optional int64 to_date = 7;
+    optional string description = 8;
+}
+
+message UpdateWorkExperienceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkExperience work_experience = 4;
+    }
 }

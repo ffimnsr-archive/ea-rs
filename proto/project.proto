@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service ProjectService {
+    rpc ListProjects (ListProjectsRequest) returns (ListProjectsResponse);
+    rpc GetProject (GetProjectRequest) returns (GetProjectResponse);
+    rpc CreateProject (CreateProjectRequest) returns (CreateProjectResponse);
+    rpc DeleteProject (DeleteProjectRequest) returns (DeleteProjectResponse);
+    rpc UpdateProject (UpdateProjectRequest) returns (UpdateProjectResponse);
+}
+
 message Project {
     string id = 1;
     string public_code = 2;
@@ -15,4 +23,78 @@ message Project {
     string created_by_id = 7;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListProjectsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListProjectsResponse {
+    bool success = 1;
+    repeated Project projects = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetProjectRequest {
+    string project_id = 1;
+}
+
+message GetProjectResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Project project = 4;
+    }
+}
+
+message CreateProjectRequest {
+    string request_id = 42;
+    string public_code = 2;
+    string name = 3;
+    string description = 4;
+    string parent_organization_id = 5;
+    string managed_by_id = 6;
+    string created_by_id = 7;
+}
+
+message CreateProjectResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Project project = 4;
+    }
+}
+
+message DeleteProjectRequest {
+    string request_id = 42;
+    string project_id = 1;
+}
+
+message DeleteProjectResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Project project = 4;
+    }
+}
+
+message UpdateProjectRequest {
+    string request_id = 42;
+    string project_id = 1;
+    optional string public_code = 2;
+    optional string name = 3;
+    optional string description = 4;
+    optional string parent_organization_id = 5;
+    optional string managed_by_id = 6;
+    optional string created_by_id = 7;
+}
+
+message UpdateProjectResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Project project = 4;
+    }
 }

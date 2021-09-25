@@ -5,10 +5,84 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service WorkPreferenceService {
+    rpc ListWorkPreferences (ListWorkPreferencesRequest) returns (ListWorkPreferencesResponse);
+    rpc GetWorkPreference (GetWorkPreferenceRequest) returns (GetWorkPreferenceResponse);
+    rpc CreateWorkPreference (CreateWorkPreferenceRequest) returns (CreateWorkPreferenceResponse);
+    rpc DeleteWorkPreference (DeleteWorkPreferenceRequest) returns (DeleteWorkPreferenceResponse);
+    rpc UpdateWorkPreference (UpdateWorkPreferenceRequest) returns (UpdateWorkPreferenceResponse);
+}
+
 message WorkPreference {
     string id = 1;
     string user_id = 2;
     string work_function_id = 3;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListWorkPreferencesRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListWorkPreferencesResponse {
+    bool success = 1;
+    repeated WorkPreference work_preferences = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetWorkPreferenceRequest {
+    string work_preference_id = 1;
+}
+
+message GetWorkPreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkPreference work_preference = 4;
+    }
+}
+
+message CreateWorkPreferenceRequest {
+    string request_id = 42;
+    string user_id = 2;
+    string work_function_id = 3;
+}
+
+message CreateWorkPreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkPreference work_preference = 4;
+    }
+}
+
+message DeleteWorkPreferenceRequest {
+    string request_id = 42;
+    string work_preference_id = 1;
+}
+
+message DeleteWorkPreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkPreference work_preference = 4;
+    }
+}
+
+message UpdateWorkPreferenceRequest {
+    string request_id = 42;
+    string work_preference_id = 1;
+    optional string user_id = 2;
+    optional string work_function_id = 3;
+}
+
+message UpdateWorkPreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkPreference work_preference = 4;
+    }
 }

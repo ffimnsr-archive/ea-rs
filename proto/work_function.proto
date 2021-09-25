@@ -5,10 +5,84 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service WorkFunctionService {
+    rpc ListWorkFunctions (ListWorkFunctionsRequest) returns (ListWorkFunctionsResponse);
+    rpc GetWorkFunction (GetWorkFunctionRequest) returns (GetWorkFunctionResponse);
+    rpc CreateWorkFunction (CreateWorkFunctionRequest) returns (CreateWorkFunctionResponse);
+    rpc DeleteWorkFunction (DeleteWorkFunctionRequest) returns (DeleteWorkFunctionResponse);
+    rpc UpdateWorkFunction (UpdateWorkFunctionRequest) returns (UpdateWorkFunctionResponse);
+}
+
 message WorkFunction {
     string id = 1;
     string name = 2;
     string description = 3;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListWorkFunctionsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListWorkFunctionsResponse {
+    bool success = 1;
+    repeated WorkFunction work_functions = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetWorkFunctionRequest {
+    string work_function_id = 1;
+}
+
+message GetWorkFunctionResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkFunction work_function = 4;
+    }
+}
+
+message CreateWorkFunctionRequest {
+    string request_id = 42;
+    string name = 2;
+    string description = 3;
+}
+
+message CreateWorkFunctionResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkFunction work_function = 4;
+    }
+}
+
+message DeleteWorkFunctionRequest {
+    string request_id = 42;
+    string work_function_id = 1;
+}
+
+message DeleteWorkFunctionResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkFunction work_function = 4;
+    }
+}
+
+message UpdateWorkFunctionRequest {
+    string request_id = 42;
+    string work_function_id = 1;
+    optional string name = 2;
+    optional string description = 3;
+}
+
+message UpdateWorkFunctionResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        WorkFunction work_function = 4;
+    }
 }

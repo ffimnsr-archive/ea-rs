@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service NotificationService {
+    rpc ListNotifications (ListNotificationsRequest) returns (ListNotificationsResponse);
+    rpc GetNotification (GetNotificationRequest) returns (GetNotificationResponse);
+    rpc CreateNotification (CreateNotificationRequest) returns (CreateNotificationResponse);
+    rpc DeleteNotification (DeleteNotificationRequest) returns (DeleteNotificationResponse);
+    rpc UpdateNotification (UpdateNotificationRequest) returns (UpdateNotificationResponse);
+}
+
 message Notification {
     string id = 1;
     string user_id = 2;
@@ -16,4 +24,80 @@ message Notification {
     bool is_deleted = 8;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListNotificationsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListNotificationsResponse {
+    bool success = 1;
+    repeated Notification notifications = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetNotificationRequest {
+    string notification_id = 1;
+}
+
+message GetNotificationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Notification notification = 4;
+    }
+}
+
+message CreateNotificationRequest {
+    string request_id = 42;
+    string user_id = 2;
+    string title = 3;
+    string description = 4;
+    int32 class = 5;
+    bool is_read = 6;
+    bool is_published = 7;
+    bool is_deleted = 8;
+}
+
+message CreateNotificationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Notification notification = 4;
+    }
+}
+
+message DeleteNotificationRequest {
+    string request_id = 42;
+    string notification_id = 1;
+}
+
+message DeleteNotificationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Notification notification = 4;
+    }
+}
+
+message UpdateNotificationRequest {
+    string request_id = 42;
+    string notification_id = 1;
+    optional string user_id = 2;
+    optional string title = 3;
+    optional string description = 4;
+    optional int32 class = 5;
+    optional bool is_read = 6;
+    optional bool is_published = 7;
+    optional bool is_deleted = 8;
+}
+
+message UpdateNotificationResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Notification notification = 4;
+    }
 }

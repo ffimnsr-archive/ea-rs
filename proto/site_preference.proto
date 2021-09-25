@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service SitePreferenceService {
+    rpc ListSitePreferences (ListSitePreferencesRequest) returns (ListSitePreferencesResponse);
+    rpc GetSitePreference (GetSitePreferenceRequest) returns (GetSitePreferenceResponse);
+    rpc CreateSitePreference (CreateSitePreferenceRequest) returns (CreateSitePreferenceResponse);
+    rpc DeleteSitePreference (DeleteSitePreferenceRequest) returns (DeleteSitePreferenceResponse);
+    rpc UpdateSitePreference (UpdateSitePreferenceRequest) returns (UpdateSitePreferenceResponse);
+}
+
 message SitePreference {
     string id = 1;
     string user_id = 2;
@@ -13,4 +21,74 @@ message SitePreference {
     bool is_opt_in_experimental = 5;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListSitePreferencesRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListSitePreferencesResponse {
+    bool success = 1;
+    repeated SitePreference site_preferences = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetSitePreferenceRequest {
+    string site_preference_id = 1;
+}
+
+message GetSitePreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        SitePreference site_preference = 4;
+    }
+}
+
+message CreateSitePreferenceRequest {
+    string request_id = 42;
+    string user_id = 2;
+    bool is_opt_in_marketing = 3;
+    bool is_opt_in_usage_statistics = 4;
+    bool is_opt_in_experimental = 5;
+}
+
+message CreateSitePreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        SitePreference site_preference = 4;
+    }
+}
+
+message DeleteSitePreferenceRequest {
+    string request_id = 42;
+    string site_preference_id = 1;
+}
+
+message DeleteSitePreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        SitePreference site_preference = 4;
+    }
+}
+
+message UpdateSitePreferenceRequest {
+    string request_id = 42;
+    string site_preference_id = 1;
+    optional string user_id = 2;
+    optional bool is_opt_in_marketing = 3;
+    optional bool is_opt_in_usage_statistics = 4;
+    optional bool is_opt_in_experimental = 5;
+}
+
+message UpdateSitePreferenceResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        SitePreference site_preference = 4;
+    }
 }

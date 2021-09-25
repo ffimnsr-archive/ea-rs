@@ -5,6 +5,14 @@ package ea;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+service ProjectClueService {
+    rpc ListProjectClues (ListProjectCluesRequest) returns (ListProjectCluesResponse);
+    rpc GetProjectClue (GetProjectClueRequest) returns (GetProjectClueResponse);
+    rpc CreateProjectClue (CreateProjectClueRequest) returns (CreateProjectClueResponse);
+    rpc DeleteProjectClue (DeleteProjectClueRequest) returns (DeleteProjectClueResponse);
+    rpc UpdateProjectClue (UpdateProjectClueRequest) returns (UpdateProjectClueResponse);
+}
+
 message ProjectClue {
     string id = 1;
     string project_id = 2;
@@ -14,4 +22,76 @@ message ProjectClue {
     string repository_ssh_url = 6;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListProjectCluesRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListProjectCluesResponse {
+    bool success = 1;
+    repeated ProjectClue project_clues = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetProjectClueRequest {
+    string project_clue_id = 1;
+}
+
+message GetProjectClueResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        ProjectClue project_clue = 4;
+    }
+}
+
+message CreateProjectClueRequest {
+    string request_id = 42;
+    string project_id = 2;
+    string requirements = 3;
+    string environments = 4;
+    string repository_http_url = 5;
+    string repository_ssh_url = 6;
+}
+
+message CreateProjectClueResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        ProjectClue project_clue = 4;
+    }
+}
+
+message DeleteProjectClueRequest {
+    string request_id = 42;
+    string project_clue_id = 1;
+}
+
+message DeleteProjectClueResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        ProjectClue project_clue = 4;
+    }
+}
+
+message UpdateProjectClueRequest {
+    string request_id = 42;
+    string project_clue_id = 1;
+    optional string project_id = 2;
+    optional string requirements = 3;
+    optional string environments = 4;
+    optional string repository_http_url = 5;
+    optional string repository_ssh_url = 6;
+}
+
+message UpdateProjectClueResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        ProjectClue project_clue = 4;
+    }
 }

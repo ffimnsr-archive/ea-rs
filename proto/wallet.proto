@@ -6,10 +6,84 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "num_types.proto";
 
+service WalletService {
+    rpc ListWallets (ListWalletsRequest) returns (ListWalletsResponse);
+    rpc GetWallet (GetWalletRequest) returns (GetWalletResponse);
+    rpc CreateWallet (CreateWalletRequest) returns (CreateWalletResponse);
+    rpc DeleteWallet (DeleteWalletRequest) returns (DeleteWalletResponse);
+    rpc UpdateWallet (UpdateWalletRequest) returns (UpdateWalletResponse);
+}
+
 message Wallet {
     string id = 1;
     string user_id = 2;
     BigDecimal balance = 3;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListWalletsRequest {
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message ListWalletsResponse {
+    bool success = 1;
+    repeated Wallet wallets = 4;
+    string next_page_token = 5;
+    int64 total_size = 6;
+}
+
+message GetWalletRequest {
+    string wallet_id = 1;
+}
+
+message GetWalletResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Wallet wallet = 4;
+    }
+}
+
+message CreateWalletRequest {
+    string request_id = 42;
+    string user_id = 2;
+    BigDecimal balance = 3;
+}
+
+message CreateWalletResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Wallet wallet = 4;
+    }
+}
+
+message DeleteWalletRequest {
+    string request_id = 42;
+    string wallet_id = 1;
+}
+
+message DeleteWalletResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Wallet wallet = 4;
+    }
+}
+
+message UpdateWalletRequest {
+    string request_id = 42;
+    string wallet_id = 1;
+    optional string user_id = 2;
+    optional BigDecimal balance = 3;
+}
+
+message UpdateWalletResponse {
+    bool success = 1;
+    oneof data {
+        string message = 2;
+        Wallet wallet = 4;
+    }
 }
