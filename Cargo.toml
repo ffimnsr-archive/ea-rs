@@ -15,6 +15,15 @@ root = "packages/account_ext/data/migrations"
 [workspace.metadata.migrations.address]
 root = "packages/address/data/migrations"
 
+[workspace.metadata.migrations.event]
+root = "packages/event/data/migrations"
+
+[workspace.metadata.migrations.notification]
+root = "packages/notification/data/migrations"
+
+[workspace.metadata.migrations.offer]
+root = "packages/offer/data/migrations"
+
 [workspace.metadata.migrations.organization]
 root = "packages/organization/data/migrations"
 
@@ -23,3 +32,6 @@ root = "packages/project/data/migrations"
 
 [workspace.metadata.migrations.talent_pool]
 root = "packages/talent_pool/data/migrations"
+
+[workspace.metadata.migrations.wallet]
+root = "packages/wallet/data/migrations"
