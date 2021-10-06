@@ -26,32 +26,35 @@ pub trait MyriadExt<T>: Sized {
 
 pub trait BaseEntity {
     fn get_table_name() -> Cow<'static, str>;
-    fn get_required_fields() -> Cow<'static, str>;
-    fn get_required_fields_arr() -> Vec<String>;
-    fn field_count() -> usize;
+    fn get_required_fields_str() -> Cow<'static, str>;
+    fn get_required_fields() -> Vec<String>;
+
+    fn field_count() -> usize {
+        Self::get_required_fields().len()
+    }
 }
 
 pub trait MutateEntity {
-    fn get_required_create_fields() -> Cow<'static, str> {
-        let fields = Self::get_required_create_fields_arr();
+    fn get_required_create_fields_str() -> Cow<'static, str> {
+        let fields = Self::get_required_create_fields();
         fields.join(", ").into()
     }
 
-    fn get_required_create_fields_arr() -> Vec<String>;
+    fn get_required_create_fields() -> Vec<String>;
 
     fn create_field_count() -> usize {
-        Self::get_required_create_fields_arr().len()
+        Self::get_required_create_fields().len()
     }
 
-    fn get_required_update_fields() -> Cow<'static, str> {
-        let fields = Self::get_required_update_fields_arr();
+    fn get_required_update_fields_str() -> Cow<'static, str> {
+        let fields = Self::get_required_update_fields();
         fields.join(", ").into()
     }
 
-    fn get_required_update_fields_arr() -> Vec<String>;
+    fn get_required_update_fields() -> Vec<String>;
 
     fn update_field_count() -> usize {
-        Self::get_required_update_fields_arr().len()
+        Self::get_required_update_fields().len()
     }
 }
 

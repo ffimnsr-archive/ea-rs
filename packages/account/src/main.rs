@@ -8,7 +8,7 @@ use uuid::Uuid;
 use ea_core::{BaseEntity, MutateEntity, MyriadExt, flip_service_status};
 use ea_core::token::{generate_token, parse_token};
 use ea_core::db::{Pool, get_db_pool};
-use entities::account::{RawAccount, Account, AccountPayload};
+use entities::account::{Account, AccountRaw, AccountPayload};
 use pb::account_service_server::AccountServiceServer;
 
 use pb::{
@@ -62,7 +62,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
 
                 Response::new(ListAccountsResponse {
                     success: true,
-                    accounts: AccountPayload::from_vec(data),
+                    accounts: crate::pb::Account::from_vec(data),
                     next_page_token,
                     total_size,
                 })
@@ -144,6 +144,10 @@ impl pb::account_service_server::AccountService for CoreImpl {
 }
 
 impl CoreImpl {
+    fn new_service(pool: &Pool) -> AccountServiceServer<Self> {
+        AccountServiceServer::new(Self::new(&pool))
+    }
+
     fn new(pool: &Pool) -> Self {
         Self { pool: pool.clone() }
     }
@@ -167,7 +171,7 @@ impl CoreImpl {
         result
     }
 
-    async fn list_accounts(&self, data: &ListAccountsRequest, page_size: i64) -> DbResult<Vec<RawAccount>> {
+    async fn list_accounts(&self, data: &ListAccountsRequest, page_size: i64) -> DbResult<Vec<AccountRaw>> {
         let conn = self.pool.get().await?;
 
         if let Some(token_context) = parse_token(&data.page_token) {
@@ -177,8 +181,8 @@ impl CoreImpl {
                 ) AS constrained_result
                 WHERE row_num > $1
                 FETCH FIRST $2 ROWS ONLY",
-                Account::get_required_fields(),
-                Account::get_required_fields(),
+                Account::get_required_fields_str(),
+                Account::get_required_fields_str(),
                 Account::get_table_name(),
             );
 
@@ -192,14 +196,14 @@ impl CoreImpl {
                 ])
                 .await
                 .map_err(|err| err.into())
-                .map(RawAccount::from_vec);
+                .map(AccountRaw::from_vec);
 
             result
         } else {
             let query = format!(
                 "SELECT ROW_NUMBER() OVER (ORDER BY created_at) AS row_num, {} FROM {} WHERE is_deleted = false ORDER BY created_at ASC
                 FETCH FIRST $1 ROWS ONLY",
-                Account::get_required_fields(),
+                Account::get_required_fields_str(),
                 Account::get_table_name(),
             );
 
@@ -211,7 +215,7 @@ impl CoreImpl {
                 ])
                 .await
                 .map_err(|err| err.into())
-                .map(RawAccount::from_vec);
+                .map(AccountRaw::from_vec);
 
             result
         }
@@ -222,7 +226,7 @@ impl CoreImpl {
 
         let query = format!(
             "SELECT {} FROM {} WHERE id = $1 AND is_deleted = false",
-            Account::get_required_fields(),
+            Account::get_required_fields_str(),
             Account::get_table_name(),
         );
 
@@ -254,7 +258,7 @@ impl CoreImpl {
 
         let query = format!("INSERT INTO {} ({}) VALUES ({}) RETURNING id, email_verified, created_at, updated_at",
             Account::get_table_name(),
-            Account::get_required_create_fields(),
+            Account::get_required_create_fields_str(),
             field_placeholder(Account::create_field_count()),
         );
 
@@ -353,7 +357,7 @@ impl CoreImpl {
         let field_placeholder = || {
             let mut placeholder = String::new();
             let mut count = 1i32;
-            for field in Account::get_required_update_fields_arr().iter() {
+            for field in Account::get_required_update_fields().iter() {
                 placeholder.push_str(&format!("{} = COALESCE(${}, {}), ", field, count, field));
                 count += 1;
             }
@@ -429,7 +433,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder()
         .add_service(reflection_service)
         .add_service(health_service)
-        .add_service(AccountServiceServer::new(CoreImpl::new(&pool)))
+        .add_service(CoreImpl::new_service(&pool))
         .serve(addr)
         .await?;
 
