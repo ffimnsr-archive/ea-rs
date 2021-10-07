@@ -1,9 +1,6 @@
 use chrono::{DateTime, Utc};
-use chrono::serde::ts_seconds;
 use uuid::Uuid;
-use serde::{Serialize, Deserialize};
 use ea_sql_derive::{Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload};
-pub use crate::pb::Account as AccountPayload;
 
 #[derive(Debug, Clone, PartialEq, Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload)]
 pub struct Account {
@@ -36,10 +33,7 @@ pub struct Account {
     #[ea_sql(include_in(update))]
     pub email_verified: bool,
 
-    // #[serde(with = "ts_seconds")]
     pub created_at: DateTime<Utc>,
 
-    // #[serde(with = "ts_seconds")]
     pub updated_at: DateTime<Utc>,
 }
-

@@ -8,7 +8,7 @@ use uuid::Uuid;
 use ea_core::{BaseEntity, MutateEntity, MyriadExt, flip_service_status};
 use ea_core::token::{generate_token, parse_token};
 use ea_core::db::{Pool, get_db_pool};
-use entities::account::{Account, AccountRaw, AccountPayload};
+use entities::account::{Account, AccountRaw};
 use pb::account_service_server::AccountServiceServer;
 
 use pb::{
@@ -62,7 +62,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
 
                 Response::new(ListAccountsResponse {
                     success: true,
-                    accounts: crate::pb::Account::from_vec(data),
+                    accounts: pb::Account::from_vec(data),
                     next_page_token,
                     total_size,
                 })
@@ -89,7 +89,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
         result
             .map(|data| Response::new(GetAccountResponse {
                 success: true,
-                data: Some(pb::get_account_response::Data::Account(AccountPayload::from(data))),
+                data: Some(pb::get_account_response::Data::Account(pb::Account::from(data))),
             }))
             .map_err(|err| {
                 error!("An error occurred in `get_account` method: {}", err.to_string());
@@ -104,7 +104,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
         result
             .map(|data| Response::new(CreateAccountResponse {
                 success: true,
-                data: Some(pb::create_account_response::Data::Account(AccountPayload::from(data))),
+                data: Some(pb::create_account_response::Data::Account(pb::Account::from(data))),
             }))
             .map_err(|err| {
                 error!("An error occurred in `create_account` method: {}", err.to_string());
@@ -119,7 +119,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
         result
             .map(|data| Response::new(DeleteAccountResponse {
                 success: true,
-                data: Some(pb::delete_account_response::Data::Account(AccountPayload::from(data))),
+                data: Some(pb::delete_account_response::Data::Account(pb::Account::from(data))),
             }))
             .map_err(|err| {
                 error!("An error occurred in `delete_account` method: {}", err.to_string());
@@ -134,7 +134,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
         result
             .map(|data| Response::new(UpdateAccountResponse {
                 success: true,
-                data: Some(pb::update_account_response::Data::Account(AccountPayload::from(data))),
+                data: Some(pb::update_account_response::Data::Account(pb::Account::from(data))),
             }))
             .map_err(|err| {
                 error!("An error occurred in `update_account` method: {}", err.to_string());
