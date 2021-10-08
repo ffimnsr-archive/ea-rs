@@ -75,7 +75,7 @@ pub fn derive_from_row(input: TokenStream) -> TokenStream {
         }
 
         impl ::ea_core::MyriadExt<::tokio_postgres::Row> for #struct_name {
-            fn from_vec(data: Vec<::tokio_postgres::Row>) -> Vec<Self> {
+            fn from_vec(data: ::std::vec::Vec<::tokio_postgres::Row>) -> Vec<Self> {
                 data.iter().map(Self::from).collect()
             }
         }
@@ -237,7 +237,7 @@ pub fn derive_into_proto_payload(input: TokenStream) -> TokenStream {
         }
 
         impl ::ea_core::MyriadExt<#struct_name> for crate::pb::#target_name {
-            fn from_vec(data: std::vec::Vec<#struct_name>) -> Vec<Self> {
+            fn from_vec(data: ::std::vec::Vec<#struct_name>) -> Vec<Self> {
                 data.iter().map(Self::from).collect()
             }
         }

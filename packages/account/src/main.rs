@@ -54,22 +54,28 @@ impl pb::account_service_server::AccountService for CoreImpl {
 
         let result = self.list_accounts(&data, page_size).await;
 
-        let res = result
-            .map(|data| {
-                let last_entry = data.last().clone().unwrap();
-                let is_more_entries = total_size >= last_entry.row_num + page_size;
-                let next_page_token = if is_more_entries { generate_token(last_entry.row_num) } else { String::new() };
+        match result {
+            Ok(data) => {
+                if data.last().is_some() {
+                    let last_entry = data.last().clone().unwrap();
+                    let is_more_entries = total_size >= last_entry.row_num + page_size;
+                    let next_page_token = if is_more_entries { generate_token(last_entry.row_num) } else { String::new() };
 
-                Response::new(ListAccountsResponse {
-                    success: true,
-                    accounts: pb::Account::from_vec(data),
-                    next_page_token,
-                    total_size,
-                })
-            });
-
-        match res {
-            Ok(data) => Ok(data),
+                    Ok(Response::new(ListAccountsResponse {
+                        success: true,
+                        accounts: pb::Account::from_vec(data),
+                        next_page_token,
+                        total_size,
+                    }))
+                } else {
+                    Ok(Response::new(ListAccountsResponse {
+                        success: true,
+                        accounts: vec![],
+                        next_page_token: String::new(),
+                        total_size,
+                    }))
+                }
+            }
             Err(err) => {
                 warn!("An non fatal error occurred in `list_accounts` method: {}", err.to_string());
                 Ok(Response::new(ListAccountsResponse {
@@ -78,7 +84,7 @@ impl pb::account_service_server::AccountService for CoreImpl {
                     next_page_token: String::new(),
                     total_size,
                 }))
-            },
+            }
         }
     }
 
@@ -407,7 +413,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv::dotenv().ok();
 
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "account_svc=trace");
+        env::set_var("RUST_LOG", "ea_account=trace");
     }
 
     tracing_subscriber::fmt()
