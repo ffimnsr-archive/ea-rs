@@ -11,18 +11,7 @@ use ea_core::db::{Pool, get_db_pool};
 use entities::account::{Account, AccountRaw};
 use pb::account_service_server::AccountServiceServer;
 
-use pb::{
-    ListAccountsRequest,
-    ListAccountsResponse,
-    GetAccountRequest,
-    GetAccountResponse,
-    CreateAccountRequest,
-    CreateAccountResponse,
-    DeleteAccountRequest,
-    DeleteAccountResponse,
-    UpdateAccountRequest,
-    UpdateAccountResponse,
-};
+use pb::*;
 
 pub mod pb {
     tonic::include_proto!("ea");
