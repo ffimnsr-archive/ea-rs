@@ -24,7 +24,7 @@ pub mod pb {
 mod entities;
 
 #[derive(ProtoAccessors)]
-#[ea_proto(name = "Account")]
+#[ea_proto(name("Account"))]
 pub struct CoreImpl {
     pool: Pool,
 }

@@ -19,7 +19,7 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
     };
 
     fn mk_err<T: quote::ToTokens>(t: T) -> proc_macro2::TokenStream {
-        syn::Error::new_spanned(t, "expected `ea_proto(name = \"...\")`").to_compile_error()
+        syn::Error::new_spanned(t, "expected `ea_proto(name(\"...\"))`").to_compile_error()
     }
 
     let meta = match proto_attr.parse_meta() {
@@ -31,11 +31,18 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
             }
 
             match nvs.nested.pop().unwrap().into_value() {
-                syn::NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
-                    if nv.path != NAME {
-                        return mk_err(nvs).into();
+                // syn::NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
+                //     if nv.path != NAME {
+                //         return mk_err(nvs).into();
+                //     }
+                //     nv
+                // }
+                syn::NestedMeta::Meta(syn::Meta::List(p)) => {
+                    if p.path != NAME {
+                        return mk_err(p).into();
                     }
-                    nv
+
+                    p
                 }
                 meta => {
                     return mk_err(meta).into();
@@ -48,21 +55,35 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     };
 
-    let (c, d, p, dp) = match meta.lit {
-        syn::Lit::Str(s) => {
-            let downcase = s.value().as_str().to_lowercase();
-            let pluralize = s.value().as_str().to_plural();
-            let downcase_pluralize = pluralize.clone().to_lowercase();
+    let expanded = meta.nested.iter().map(|nm| {
+        let (c, d, p, dp) = match nm {
+            syn::NestedMeta::Lit(syn::Lit::Str(s)) => {
+                let downcase = s.value().as_str().to_lowercase();
+                let pluralize = s.value().as_str().to_plural();
+                let downcase_pluralize = pluralize.clone().to_lowercase();
 
-            let c = syn::Ident::new(&s.value(), s.span());
-            let d = syn::Ident::new(&downcase, s.span());
-            let p = syn::Ident::new(&pluralize, s.span());
-            let dp = syn::Ident::new(&downcase_pluralize, s.span());
-            (c, d, p, dp)
+                let c = syn::Ident::new(&s.value(), s.span());
+                let d = syn::Ident::new(&downcase, s.span());
+                let p = syn::Ident::new(&pluralize, s.span());
+                let dp = syn::Ident::new(&downcase_pluralize, s.span());
+                (c, d, p, dp)
+            }
+            lit => panic!("expected string, found {:?}", lit),
+        };
+
+        proto_impl(&c, &d, &p, &dp, &struct_name)
+    })
+    .fold(quote! {}, |acc, x| {
+        quote! {
+            #acc
+            #x
         }
-        lit => panic!("expected string, found {:?}", lit),
-    };
+    });
 
+    TokenStream::from(expanded)
+}
+
+fn proto_impl(c: &syn::Ident, d: &syn::Ident, p: &syn::Ident, dp: &syn::Ident, sn: &syn::Ident) -> proc_macro2::TokenStream {
     let service_package = format_ident!("{}_service_server", d);
     let get_package_res_name = format_ident!("get_{}_response", d);
     let create_package_res_name = format_ident!("create_{}_response", d);
@@ -87,12 +108,12 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
     let update_req_name = format_ident!("Update{}Request", c);
     let update_res_name = format_ident!("Update{}Response", c);
 
-    // eprintln!("AST {:#?}", c);
-
     let expanded = quote! {
         #[::tonic::async_trait]
-        impl pb::#service_package::#service_name for #struct_name {
+        impl pb::#service_package::#service_name for #sn {
             async fn #list_fn_name(&self, req: ::tonic::Request<pb::#list_req_name>) -> ::ea_core::ServiceResult<pb::#list_res_name> {
+                use ::ea_core::MyriadExt;
+
                 let data = req.into_inner();
                 let total_size = self.#count_fn_name().await.unwrap();
 
@@ -117,7 +138,7 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
 
                             Ok(::tonic::Response::new(pb::#list_res_name {
                                 success: true,
-                                #dp: pb::Account::from_vec(data),
+                                #dp: pb::#c::from_vec(data),
                                 next_page_token,
                                 total_size,
                             }))
@@ -208,5 +229,5 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
         }
     };
 
-    TokenStream::from(expanded)
+    expanded
 }

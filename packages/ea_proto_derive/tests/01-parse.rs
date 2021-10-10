@@ -1,38 +1,15 @@
-use ea_proto_derive::ProtoAccessors;
-use ea_core::DbResult;
-
-use ea_core::MyriadExt;
+mod internals;
 
 pub mod pb {
     tonic::include_proto!("ea");
 }
 
-struct Account;
-
-struct AccountRaw {
-    pub row_num: i64,
-}
-
-impl From<&Account> for pb::Account {
-    fn from(_payload: &Account) -> Self {
-        unimplemented!()
-    }
-}
-
-impl From<Account> for pb::Account {
-    fn from(_payload: Account) -> Self {
-        unimplemented!()
-    }
-}
-
-impl MyriadExt<AccountRaw> for pb::Account {
-    fn from_vec(_data: ::std::vec::Vec<AccountRaw>) -> Vec<Self> {
-        unimplemented!()
-    }
-}
+use ea_proto_derive::ProtoAccessors;
+use ea_core::DbResult;
+use internals::{Account, AccountRaw};
 
 #[derive(ProtoAccessors)]
-#[ea_proto(name = "Account")]
+#[ea_proto(name("Account"))]
 pub struct CoreImpl;
 
 impl CoreImpl {
