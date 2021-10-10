@@ -265,6 +265,7 @@ dependencies = [
  "chrono",
  "dotenv",
  "ea_core",
+ "ea_proto_derive",
  "ea_sql_derive",
  "inflector",
  "log",
@@ -559,6 +560,29 @@ dependencies = [
  "tracing-attributes",
  "tracing-futures",
  "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
+name = "ea_proto_derive"
+version = "0.1.1"
+dependencies = [
+ "chrono",
+ "ea_core",
+ "inflector",
+ "log",
+ "proc-macro2",
+ "prost",
+ "prost-types",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn",
+ "tokio",
+ "tokio-postgres",
+ "tonic",
+ "tonic-build",
+ "trybuild",
  "uuid",
 ]
 

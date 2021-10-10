@@ -1,0 +1,178 @@
+#!/bin/bash
+
+set -euo pipefail
+
+GRPCURL=$HOME/bin/grpcurl
+ACCOUNT_SVC_HOST=localhost:8010
+ADDRESS_SVC_HOST=localhost:8011
+
+function list_addresses() {
+	$GRPCURL -plaintext -d @ $ADDRESS_SVC_HOST ea.AddressService/ListAddresses <<-EOM
+		{}
+	EOM
+}
+
+function list_countries() {
+	$GRPCURL -plaintext -d @ $ADDRESS_SVC_HOST ea.AddressService/ListCountries <<-EOM
+		{}
+	EOM
+}
+
+function list_accounts() {
+	$GRPCURL -plaintext -d @ $ACCOUNT_SVC_HOST ea.AccountService/ListAccounts <<-EOM
+		{}
+	EOM
+}
+
+function create_account() {
+	$GRPCURL -plaintext -d @ $ACCOUNT_SVC_HOST ea.AccountService/CreateAccount <<-EOM
+		{
+            "request_id": "some-random",
+            "global_id": "$(uuidgen)",
+            "username": "johnwick",
+            "avatar": "sample-avatar",
+            "given_name": "John",
+            "family_name": "Wick",
+            "middle_name": "Gold",
+            "email": "test-1@local.dev"
+        }
+	EOM
+}
+
+function update_account() {
+	$GRPCURL -plaintext -d @ $ACCOUNT_SVC_HOST ea.AccountService/UpdateAccount <<-EOM
+		{
+            "request_id": "some-random",
+            "user_id": "$(uuidgen)",
+            "global_id": "$(uuidgen)",
+            "username": "johnwick",
+            "avatar": "sample-avatar",
+            "given_name": "John",
+            "family_name": "Wick",
+            "middle_name": "Gold",
+            "email": "test-1@local.dev"
+            "email_verified" true,
+        }
+	EOM
+}
+
+function delete_account() {
+	$GRPCURL -plaintext -d @ $ACCOUNT_SVC_HOST ea.AccountService/DeleteAccount <<-EOM
+		{
+            "request_id": "some-random",
+            "user_id": "$(uuidgen)"
+        }
+	EOM
+}
+
+function help() {
+    echo
+    echo "$1 <command>"
+    echo
+    echo "commands:"
+    echo
+    echo "account"
+    echo "address"
+}
+
+case "${1:-help}" in
+    account)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_accounts ;;
+        esac
+        ;;
+	address)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_addresses ;;
+        esac
+        ;;
+    country)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    event)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    feed)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    notification)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    organization)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    offer)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    project)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    talent)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+    wallet)
+        case "${2:-list}" in
+            create) create_account ;;
+            update) update_account ;;
+            delete) delete_account ;;
+            *) list_countries ;;
+        esac
+        ;;
+	list)
+        shift
+		$GRPCURL -plaintext localhost:8010 list $@
+		;;
+    console)
+        shift
+        $GRPCURL -plaintext $@
+        ;;
+	*)
+        help task
+		exit 1
+esac

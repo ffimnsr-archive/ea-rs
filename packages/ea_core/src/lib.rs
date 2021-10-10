@@ -7,6 +7,9 @@ use tokio::time::Duration;
 pub mod db;
 pub mod token;
 
+pub type ServiceResult<T> = Result<::tonic::Response<T>, ::tonic::Status>;
+pub type DbResult<T> = Result<T, Box<dyn ::std::error::Error>>;
+
 pub trait FromDt: Sized {
     fn from_utc(dt: DateTime<Utc>) -> Self;
 }

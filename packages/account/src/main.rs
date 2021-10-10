@@ -1,13 +1,14 @@
 //! This module is the main entrypoint for account service.
 
 use std::env;
-use tonic::{transport::Server, Request, Response, Status};
-use log::{error, info, trace, warn};
+use tonic::transport::Server;
+use log::{info, trace};
 use nanoid::nanoid;
 use uuid::Uuid;
-use ea_core::{BaseEntity, MutateEntity, MyriadExt, flip_service_status};
-use ea_core::token::{generate_token, parse_token};
+use ea_core::{BaseEntity, MutateEntity, MyriadExt, DbResult, flip_service_status};
+use ea_core::token::parse_token;
 use ea_core::db::{Pool, get_db_pool};
+use ea_proto_derive::ProtoAccessors;
 use entities::account::{Account, AccountRaw};
 use pb::account_service_server::AccountServiceServer;
 
@@ -22,120 +23,10 @@ pub mod pb {
 
 mod entities;
 
-type ServiceResult<T> = Result<Response<T>, Status>;
-type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
-
+#[derive(ProtoAccessors)]
+#[ea_proto(name = "Account")]
 pub struct CoreImpl {
     pool: Pool,
-}
-
-#[tonic::async_trait]
-impl pb::account_service_server::AccountService for CoreImpl {
-    async fn list_accounts(&self, req: Request<ListAccountsRequest>) -> ServiceResult<ListAccountsResponse> {
-        let data = req.into_inner();
-        let total_size = self.count_account_entries().await.unwrap();
-
-        // Default the `page_size` to 10 if no value is present.
-        let page_size: i64 = match data.page_size {
-            0 => 10i64,
-            n => i64::from(n),
-        };
-
-        let result = self.list_accounts(&data, page_size).await;
-
-        match result {
-            Ok(data) => {
-                if data.last().is_some() {
-                    let last_entry = data.last().clone().unwrap();
-                    let is_more_entries = total_size >= last_entry.row_num + page_size;
-                    let next_page_token = if is_more_entries { generate_token(last_entry.row_num) } else { String::new() };
-
-                    Ok(Response::new(ListAccountsResponse {
-                        success: true,
-                        accounts: pb::Account::from_vec(data),
-                        next_page_token,
-                        total_size,
-                    }))
-                } else {
-                    Ok(Response::new(ListAccountsResponse {
-                        success: true,
-                        accounts: vec![],
-                        next_page_token: String::new(),
-                        total_size,
-                    }))
-                }
-            }
-            Err(err) => {
-                warn!("An non fatal error occurred in `list_accounts` method: {}", err.to_string());
-                Ok(Response::new(ListAccountsResponse {
-                    success: false,
-                    accounts: vec![],
-                    next_page_token: String::new(),
-                    total_size,
-                }))
-            }
-        }
-    }
-
-    async fn get_account(&self, req: Request<GetAccountRequest>) -> ServiceResult<GetAccountResponse> {
-        let data = req.into_inner();
-        let result = self.get_account(&data).await;
-
-        result
-            .map(|data| Response::new(GetAccountResponse {
-                success: true,
-                data: Some(pb::get_account_response::Data::Account(pb::Account::from(data))),
-            }))
-            .map_err(|err| {
-                error!("An error occurred in `get_account` method: {}", err.to_string());
-                Status::not_found(err.to_string())
-            })
-    }
-
-    async fn create_account(&self, req: Request<CreateAccountRequest>) -> ServiceResult<CreateAccountResponse> {
-        let data = req.into_inner();
-        let result = self.create_account(&data).await;
-
-        result
-            .map(|data| Response::new(CreateAccountResponse {
-                success: true,
-                data: Some(pb::create_account_response::Data::Account(pb::Account::from(data))),
-            }))
-            .map_err(|err| {
-                error!("An error occurred in `create_account` method: {}", err.to_string());
-                Status::aborted(err.to_string())
-            })
-    }
-
-    async fn delete_account(&self, req: Request<DeleteAccountRequest>) -> ServiceResult<DeleteAccountResponse> {
-        let data = req.into_inner();
-        let result = self.soft_delete_account(&data).await;
-
-        result
-            .map(|data| Response::new(DeleteAccountResponse {
-                success: true,
-                data: Some(pb::delete_account_response::Data::Account(pb::Account::from(data))),
-            }))
-            .map_err(|err| {
-                error!("An error occurred in `delete_account` method: {}", err.to_string());
-                Status::aborted(err.to_string())
-            })
-    }
-
-    async fn update_account(&self, req: Request<UpdateAccountRequest>) -> ServiceResult<UpdateAccountResponse> {
-        let data = req.into_inner();
-        let result = self.update_account(&data).await;
-
-        result
-            .map(|data| Response::new(UpdateAccountResponse {
-                success: true,
-                data: Some(pb::update_account_response::Data::Account(pb::Account::from(data))),
-            }))
-            .map_err(|err| {
-                error!("An error occurred in `update_account` method: {}", err.to_string());
-                Status::aborted(err.to_string())
-            })
-    }
 }
 
 impl CoreImpl {
