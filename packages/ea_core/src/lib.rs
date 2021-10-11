@@ -5,7 +5,10 @@ use std::borrow::Cow;
 use tokio::time::Duration;
 
 pub mod db;
+pub mod macros;
 pub mod token;
+
+pub use macros::*;
 
 pub type ServiceResult<T> = Result<::tonic::Response<T>, ::tonic::Status>;
 pub type DbResult<T> = Result<T, Box<dyn ::std::error::Error>>;
