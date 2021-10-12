@@ -2,17 +2,9 @@
 
 use std::env;
 use tonic::transport::Server;
-use paste::paste;
-use log::{info, trace};
-use uuid::Uuid;
-use ea_core::{MutateEntity, BaseEntity, MyriadExt};
-use ea_core::impl_crud_for;
-use ea_core::token::parse_token;
+use log::info;
 use ea_core::db::{Pool, get_db_pool};
 use ea_proto_derive::ProtoAccessors;
-use entities::{Address, Country};
-
-use pb::*;
 
 pub mod pb {
     tonic::include_proto!("ea");
@@ -34,15 +26,17 @@ impl CoreImpl {
         Self { pool: pool.clone() }
     }
 
-    impl_crud_for!(
+    ::ea_core::impl_crud_for!(
         {
             "address",
             "addresses",
-            ["address_1", "address_2", "city", "state", "country", "postal_code"],
+            ["country_id"],
+            ["address_1", "address_2", "city", "state", "postal_code"],
         },
         {
             "country",
             "countries",
+            [],
             ["name", "alpha2", "alpha3", "phone_code", "currency_code"],
         },
     );
@@ -71,7 +65,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
 
-    ea_core::spawn_health_reporter!(health_reporter, "address", "country");
+    ::ea_core::spawn_health_reporter!(health_reporter, "address", "country");
 
     Server::builder()
         .add_service(reflection_service)

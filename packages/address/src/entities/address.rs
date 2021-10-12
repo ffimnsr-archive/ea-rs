@@ -19,10 +19,10 @@ pub struct Address {
     pub state: String,
 
     #[ea_sql(include_in(create, update))]
-    pub country: String,
+    pub postal_code: String,
 
     #[ea_sql(include_in(create, update))]
-    pub postal_code: String,
+    pub country_id: Uuid,
 
     pub created_at: DateTime<Utc>,
 
