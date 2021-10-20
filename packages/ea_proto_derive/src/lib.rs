@@ -7,7 +7,7 @@ use inflector::Inflector;
 use internals::symbol::*;
 
 #[proc_macro_derive(ProtoAccessors, attributes(ea_proto))]
-pub fn derive_arbiter(input: TokenStream) -> TokenStream {
+pub fn derive_proto_accessors(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let struct_name = &ast.ident;
 
@@ -58,9 +58,9 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
     let expanded = meta.nested.iter().map(|nm| {
         let (c, d, p, dp) = match nm {
             syn::NestedMeta::Lit(syn::Lit::Str(s)) => {
-                let downcase = s.value().as_str().to_lowercase();
+                let downcase = s.value().as_str().to_snake_case();
                 let pluralize = s.value().as_str().to_plural();
-                let downcase_pluralize = pluralize.clone().to_lowercase();
+                let downcase_pluralize = pluralize.clone().to_snake_case();
 
                 let c = syn::Ident::new(&s.value(), s.span());
                 let d = syn::Ident::new(&downcase, s.span());
