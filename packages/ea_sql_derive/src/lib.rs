@@ -200,6 +200,8 @@ pub fn derive_into_proto_payload(input: TokenStream) -> TokenStream {
             let name = &f.ident;
             if is_datetime(&f.ty) {
                 quote! { #name: Some(::prost_types::Timestamp::from_utc(payload.#name)) }
+            } else if is_naive_date(&f.ty) {
+                quote! { #name: Some(::prost_types::Timestamp::from_naive_date(payload.#name)) }
             } else if is_uuid(&f.ty) {
                 quote! { #name: payload.#name.to_string() }
             } else {
@@ -264,6 +266,16 @@ fn is_uuid(ty: &syn::Type) -> bool {
 fn is_datetime(ty: &syn::Type) -> bool {
     if let syn::Type::Path(ref p) = ty {
         if p.path.segments[0].ident == DATETIME {
+            return true;
+        }
+    }
+
+    false
+}
+
+fn is_naive_date(ty: &syn::Type) -> bool {
+    if let syn::Type::Path(ref p) = ty {
+        if p.path.segments[0].ident == NAIVE_DATE {
             return true;
         }
     }

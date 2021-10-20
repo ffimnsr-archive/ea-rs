@@ -14,6 +14,7 @@ pub const UPDATE: Symbol = Symbol("update");
 pub const COL_ROW_NUM: Symbol = Symbol("row_num");
 pub const UUID: Symbol = Symbol("Uuid");
 pub const DATETIME: Symbol = Symbol("DateTime");
+pub const NAIVE_DATE: Symbol = Symbol("NaiveDate");
 
 impl PartialEq<Symbol> for Ident {
     fn eq(&self, word: &Symbol) -> bool {

@@ -19,7 +19,7 @@ message Address {
     string address_2 = 3;
     string city = 4;
     string state = 5;
-    string country = 6;
+    string country_id = 6;
     string postal_code = 7;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
@@ -55,7 +55,7 @@ message CreateAddressRequest {
     string address_2 = 3;
     string city = 4;
     string state = 5;
-    string country = 6;
+    string country_id = 6;
     string postal_code = 7;
 }
 
@@ -87,7 +87,7 @@ message UpdateAddressRequest {
     optional string address_2 = 3;
     optional string city = 4;
     optional string state = 5;
-    optional string country = 6;
+    optional string country_id = 6;
     optional string postal_code = 7;
 }
 
