@@ -1,0 +1,37 @@
+[package]
+name = "ea_offer"
+version = "0.1.0"
+edition = "2018"
+authors = ["ffimnsr <ffimnsr@gmail.com>"]
+publish = false
+description = "The wallet service"
+homepage = "https://vastorigins.org"
+readme = "README.md"
+
+[dependencies]
+deadpool-postgres = "0.7"
+dotenv = "0.15"
+log = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.2", features = ["tracing-log"] }
+tracing-attributes = "0.1"
+tracing-futures = "0.2"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.4", features = ["rt-multi-thread", "macros", "time"] }
+tokio-postgres = { version = "0.7", features = ["with-uuid-0_8", "with-serde_json-1", "with-chrono-0_4"] }
+prost = "0.8"
+prost-types = "0.8"
+tonic = "0.5"
+tonic-reflection = "0.2"
+tonic-health = "0.4"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+
+inflector = { git = "https://github.com/fzrepo/inflector", branch = "master" }
+ea_core = { version = "0.1", path = "../ea_core" }
+ea_sql_derive = { version = "0.1", path = "../ea_sql_derive" }
+swagger_grpc = { version = "0.1", path = "../swagger_grpc" }
+
+[build-dependencies]
+tonic-build = "0.5"
