@@ -1,7 +1,7 @@
 [package]
 name = "ea_account_ext"
-version = "0.1.0"
-edition = "2018"
+version = "0.1.1"
+edition = "2021"
 authors = ["ffimnsr <ffimnsr@gmail.com>"]
 publish = false
 description = "The wallet service"
