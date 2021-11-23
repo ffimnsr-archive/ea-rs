@@ -1,3 +1,6 @@
 [submodule "packages/midas"]
 	path = packages/midas
 	url = git@github.com:ffimnsr/midas-rs.git
+[submodule "packages/psyche"]
+	path = packages/psyche
+	url = git@github.com:ffimnsr/psyche.git
