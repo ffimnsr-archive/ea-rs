@@ -5,6 +5,7 @@
     "start": "nodemon ./dist/gcd.js",
     "build": "webpack --config webpack.dev.babel.js --mode development --no-color",
     "build.types": "tsc --noEmit false --emitDeclarationOnly",
+    "build.proto": "node .bin/protoc",
     "watch": "webpack --config webpack.dev.babel.js --no-color --watch"
   },
   "devDependencies": {
@@ -26,9 +27,13 @@
     "eslint": "^8.3.0",
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.4.0",
+    "grpc-tools": "^1.11.2",
     "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.4",
     "source-map-loader": "^3.0.0",
     "ts-node": "^10.4.0",
+    "ts-proto": "^1.88.0",
     "tsconfig-paths": "^3.12.0",
     "typescript": "^4.5.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
@@ -40,7 +45,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
+    "@grpc/grpc-js": "^1.4.4",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "loglevel": "^1.8.0",
+    "long": "^5.1.0",
+    "protobufjs": "^6.11.2"
   }
 }

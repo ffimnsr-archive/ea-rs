@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package ea;
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "num_types.proto";
 
@@ -34,7 +33,7 @@ message ListWithdrawalsRequest {
 
 message ListWithdrawalsResponse {
     bool success = 1;
-    repeated Withdrawal withdrawals = 4;
+    repeated WithdrawalRequest withdrawals = 4;
     string next_page_token = 5;
     int64 total_size = 6;
 }
@@ -47,7 +46,7 @@ message GetWithdrawalResponse {
     bool success = 1;
     oneof data {
         string message = 2;
-        Withdrawal withdrawal = 4;
+        WithdrawalRequest withdrawal = 4;
     }
 }
 
@@ -66,7 +65,7 @@ message CreateWithdrawalResponse {
     bool success = 1;
     oneof data {
         string message = 2;
-        Withdrawal withdrawal = 4;
+        WithdrawalRequest withdrawal = 4;
     }
 }
 
@@ -79,7 +78,7 @@ message DeleteWithdrawalResponse {
     bool success = 1;
     oneof data {
         string message = 2;
-        Withdrawal withdrawal = 4;
+        WithdrawalRequest withdrawal = 4;
     }
 }
 
@@ -99,6 +98,6 @@ message UpdateWithdrawalResponse {
     bool success = 1;
     oneof data {
         string message = 2;
-        Withdrawal withdrawal = 4;
+        WithdrawalRequest withdrawal = 4;
     }
 }

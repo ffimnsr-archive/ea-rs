@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package ea;
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 service ProjectMemberService {
@@ -17,11 +16,11 @@ message ProjectMember {
     string id = 1;
     string user_id = 2;
     string project_id = 3;
-    string work_function_id = 3;
-    int64 start_date = 3;
-    int64 end_date = 3;
-    int32 status = 3;
-    string remarks = 3;
+    string work_function_id = 4;
+    int64 start_date = 5;
+    int64 end_date = 6;
+    int32 status = 7;
+    string remarks = 8;
     google.protobuf.Timestamp created_at = 11;
     google.protobuf.Timestamp updated_at = 12;
 }
@@ -54,11 +53,11 @@ message CreateProjectMemberRequest {
     string request_id = 42;
     string user_id = 2;
     string project_id = 3;
-    string work_function_id = 3;
-    int64 start_date = 3;
-    int64 end_date = 3;
-    int32 status = 3;
-    string remarks = 3;
+    string work_function_id = 4;
+    int64 start_date = 5;
+    int64 end_date = 6;
+    int32 status = 7;
+    string remarks = 8;
 }
 
 message CreateProjectMemberResponse {
@@ -87,11 +86,11 @@ message UpdateProjectMemberRequest {
     string project_member_id = 1;
     optional string user_id = 2;
     optional string project_id = 3;
-    optional string work_function_id = 3;
-    optional int64 start_date = 3;
-    optional int64 end_date = 3;
-    optional int32 status = 3;
-    optional string remarks = 3;
+    optional string work_function_id = 4;
+    optional int64 start_date = 5;
+    optional int64 end_date = 6;
+    optional int32 status = 7;
+    optional string remarks = 8;
 }
 
 message UpdateProjectMemberResponse {

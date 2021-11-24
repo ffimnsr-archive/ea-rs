@@ -5,6 +5,10 @@ members = [
 default-members = [
     "packages/account",
 ]
+exclude = [
+    "packages/grand_central_dispatch",
+    "packages/psyche",
+]
 
 [workspace.metadata.migrations.account]
 root = "packages/account/data/migrations"

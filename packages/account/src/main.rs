@@ -303,7 +303,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pool = get_db_pool()?;
 
     let addr = "[::]:8010".parse()?;
-    info!("Account service is listening on {}", addr);
+    info!("Open Sesame: Account Service");
+    info!("Service is listening on {}", addr);
 
     let reflection_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(pb::FILE_DESCRIPTOR_SET)

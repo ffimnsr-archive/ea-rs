@@ -88,7 +88,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pool = get_db_pool()?;
 
     let addr = "[::]:8012".parse()?;
-    info!("Account extension service is listening on {}", addr);
+    info!("Open Sesame: Account Extension Service");
+    info!("Service is listening on {}", addr);
 
     let reflection_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(pb::ACCOUNT_EXT_FILE_DESCRIPTOR_SET)

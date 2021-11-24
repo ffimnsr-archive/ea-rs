@@ -424,63 +424,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ea_gateway"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "dotenv",
- "ea_core",
- "ea_sql_derive",
- "inflector",
- "log",
- "nanoid",
- "prost",
- "prost-types",
- "serde",
- "serde_json",
- "tokio",
- "tokio-postgres",
- "tonic",
- "tonic-build",
- "tonic-health",
- "tonic-reflection",
- "tracing",
- "tracing-attributes",
- "tracing-futures",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
-name = "ea_grand_central_dispatch"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "deadpool-postgres",
- "dotenv",
- "ea_core",
- "ea_sql_derive",
- "inflector",
- "log",
- "prost",
- "prost-types",
- "serde",
- "serde_json",
- "swagger_grpc",
- "tokio",
- "tokio-postgres",
- "tonic",
- "tonic-build",
- "tonic-health",
- "tonic-reflection",
- "tracing",
- "tracing-attributes",
- "tracing-futures",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
 name = "ea_notification"
 version = "0.1.0"
 dependencies = [
