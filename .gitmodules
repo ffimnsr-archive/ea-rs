@@ -4,3 +4,6 @@
 [submodule "packages/psyche"]
 	path = packages/psyche
 	url = git@github.com:ffimnsr/psyche.git
+[submodule "packages/haya"]
+	path = packages/haya
+	url = git@github.com:ffimnsr/haya-rs.git

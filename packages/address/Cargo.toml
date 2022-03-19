@@ -1,7 +1,7 @@
 [package]
 name = "ea_address"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 authors = ["ffimnsr <ffimnsr@gmail.com>"]
 publish = false
 description = "The address service"
@@ -33,7 +33,7 @@ inflector = { git = "https://github.com/fzrepo/inflector", branch = "master" }
 ea_core = { version = "0.1", path = "../ea_core" }
 ea_sql_derive = { version = "0.1", path = "../ea_sql_derive" }
 ea_proto_derive = { version = "0.1", path = "../ea_proto_derive" }
-swagger_grpc = { version = "0.1", path = "../swagger_grpc" }
 
 [build-dependencies]
 tonic-build = "0.5"
+ 

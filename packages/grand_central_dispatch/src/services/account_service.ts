@@ -14,7 +14,6 @@ import {
   UpdateAccountResponse,
 } from "@/models/account";
 
-
 /// found this sample here:
 /// https://github.com/CatsMiaow/node-grpc-typescript/blob/master/src/client.ts
 class AccountService {

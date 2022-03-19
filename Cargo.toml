@@ -10,32 +10,35 @@ exclude = [
     "packages/psyche",
 ]
 
-[workspace.metadata.migrations.account]
-root = "packages/account/data/migrations"
+[patch.crates-io]
+jsonwebtoken = { git = "https://github.com/fzrepo/jsonwebtoken" }
 
-[workspace.metadata.migrations.account_ext]
-root = "packages/account_ext/data/migrations"
+# [workspace.metadata.migrations.account]
+# root = "packages/account/data/migrations"
 
-[workspace.metadata.migrations.address]
-root = "packages/address/data/migrations"
+# [workspace.metadata.migrations.account_ext]
+# root = "packages/account_ext/data/migrations"
 
-[workspace.metadata.migrations.event]
-root = "packages/event/data/migrations"
+# [workspace.metadata.migrations.address]
+# root = "packages/address/data/migrations"
 
-[workspace.metadata.migrations.notification]
-root = "packages/notification/data/migrations"
+# [workspace.metadata.migrations.event]
+# root = "packages/event/data/migrations"
 
-[workspace.metadata.migrations.offer]
-root = "packages/offer/data/migrations"
+# [workspace.metadata.migrations.notification]
+# root = "packages/notification/data/migrations"
 
-[workspace.metadata.migrations.organization]
-root = "packages/organization/data/migrations"
+# [workspace.metadata.migrations.offer]
+# root = "packages/offer/data/migrations"
 
-[workspace.metadata.migrations.project]
-root = "packages/project/data/migrations"
+# [workspace.metadata.migrations.organization]
+# root = "packages/organization/data/migrations"
 
-[workspace.metadata.migrations.talent_pool]
-root = "packages/talent_pool/data/migrations"
+# [workspace.metadata.migrations.project]
+# root = "packages/project/data/migrations"
 
-[workspace.metadata.migrations.wallet]
-root = "packages/wallet/data/migrations"
+# [workspace.metadata.migrations.talent_pool]
+# root = "packages/talent_pool/data/migrations"
+
+# [workspace.metadata.migrations.wallet]
+# root = "packages/wallet/data/migrations"

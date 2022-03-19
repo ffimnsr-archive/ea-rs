@@ -1,10 +1,11 @@
 # The cache layer.
-FROM rust:1.54 AS base
+FROM rust:1.58.1 AS base
 
 ENV USER=root
 
 WORKDIR /code/app
 COPY ./packages/ea_core /code/ea_core
+COPY ./packages/ea_proto_derive /code/ea_proto_derive
 COPY ./packages/ea_sql_derive /code/ea_sql_derive
 COPY ./packages/account /code/app
 COPY ./proto /proto
@@ -24,7 +25,7 @@ RUN cargo build --release --offline
 # The final build.
 FROM debian:buster-slim
 
-ARG service_version=2.1.1
+ARG service_version=0.1.1
 ARG build_date=unspecified
 ARG vcs_ref=unspecified
 
@@ -38,7 +39,7 @@ LABEL org.label-schema.usage="https://github.com/ffimnsr/ea-rs/blob/master/READM
 LABEL org.label-schema.url="https://se-same.com"
 LABEL org.label-schema.vcs-url="https://github.com/ffimnsr/ea-rs"
 LABEL org.label-schema.vcs-ref="${vcs_ref}"
-LABEL org.label-schema.vendor="Where It All Started"
+LABEL org.label-schema.vendor="ffimnsr"
 LABEL org.label-schema.docker.cmd="docker run -d -p 8010:8010 ea_account"
 
 RUN apt-get update && apt-get install -y libssl1.1 libc6 libgcc1 \
