@@ -1,14 +1,11 @@
 # The cache layer.
-FROM rust:1.58.1 AS base
+FROM rust:1.59.0 AS base
 
 ENV USER=root
 
 WORKDIR /code/app
-COPY ./packages/ea_core /code/ea_core
-COPY ./packages/ea_proto_derive /code/ea_proto_derive
-COPY ./packages/ea_sql_derive /code/ea_sql_derive
+COPY ./packages/ea_trident /code/ea_trident
 COPY ./packages/account /code/app
-COPY ./proto /proto
 RUN rm -rf .cargo \
     && mkdir -p .cargo \
     && cargo fetch \
@@ -23,15 +20,15 @@ RUN rustup component add rustfmt
 RUN cargo build --release --offline
 
 # The final build.
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
-ARG service_version=0.1.1
+ARG service_version=unspecified
 ARG build_date=unspecified
 ARG vcs_ref=unspecified
 
 LABEL maintainer="ffimnsr <ffimnsr@gmail.com>"
-LABEL org.label-schema.description="${build_date}"
-LABEL org.label-schema.description="This service provides grpc endpoint for account management"
+LABEL org.label-schema.build-date="${build_date}"
+LABEL org.label-schema.description="This service provides api endpoint for account management"
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.name="ea_account"
 LABEL org.label-schema.version="${service_version}"
@@ -41,6 +38,9 @@ LABEL org.label-schema.vcs-url="https://github.com/ffimnsr/ea-rs"
 LABEL org.label-schema.vcs-ref="${vcs_ref}"
 LABEL org.label-schema.vendor="ffimnsr"
 LABEL org.label-schema.docker.cmd="docker run -d -p 8010:8010 ea_account"
+LABEL org.opencontainers.image.source="https://github.com/ffimnsr/ea-rs"
+LABEL org.opencontainers.image.description="This service provides api endpoint for account management"
+LABEL org.opencontainers.image.licenses="MIT"
 
 RUN apt-get update && apt-get install -y libssl1.1 libc6 libgcc1 \
     && rm -rf /var/lib/apt/lists/*
