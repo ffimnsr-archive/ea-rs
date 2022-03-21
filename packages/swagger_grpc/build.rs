@@ -1,12 +1,18 @@
-use std::{env, fs, io, path::{Path, PathBuf}};
+use std::{
+    env, fs, io,
+    path::{Path, PathBuf},
+};
 
 macro_rules! copy_file {
     ($file:expr, $destination:expr) => {
         match fs::copy($file, $destination) {
             Ok(file) => file,
-            Err(error) => panic!("Problem copying the file {:?} to {:?}: {:?}", $file, $destination, error),
+            Err(error) => panic!(
+                "Problem copying the file {:?} to {:?}: {:?}",
+                $file, $destination, error
+            ),
         };
-    }
+    };
 }
 
 fn copy_dir<U: AsRef<Path>, V: AsRef<Path>>(src: U, dst: V) -> io::Result<()> {
@@ -33,7 +39,8 @@ fn get_output_path() -> PathBuf {
 }
 
 fn get_origin_path() -> PathBuf {
-    let manifest_dir_string = env::var("CARGO_MANIFEST_DIR").expect("Cargo manifest directory is not set");
+    let manifest_dir_string =
+        env::var("CARGO_MANIFEST_DIR").expect("Cargo manifest directory is not set");
     let path = Path::new(&manifest_dir_string).join("public");
     return PathBuf::from(path);
 }

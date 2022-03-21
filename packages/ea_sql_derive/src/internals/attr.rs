@@ -1,7 +1,6 @@
 use super::symbol::*;
 
 pub fn is_included_in(part_of: Symbol, f: &syn::Field) -> bool {
-
     pub fn includes_of(m: &syn::MetaList) -> Option<&syn::MetaList> {
         for nm in m.nested.iter() {
             if let syn::NestedMeta::Meta(syn::Meta::List(include_nvs)) = nm {

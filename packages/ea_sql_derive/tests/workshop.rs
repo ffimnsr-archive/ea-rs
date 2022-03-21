@@ -1,6 +1,6 @@
+use chrono::{DateTime, Utc};
 use ea_sql_derive::{FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload};
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 mod pb {
     pub struct Account {

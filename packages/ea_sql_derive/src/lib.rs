@@ -3,7 +3,7 @@ mod internals;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
-use syn::{Data, DataStruct, DeriveInput, Fields, Ident, parse_macro_input};
+use syn::{parse_macro_input, Data, DataStruct, DeriveInput, Fields, Ident};
 
 use crate::internals::{attr::is_included_in, symbol::*};
 
@@ -21,13 +21,12 @@ pub fn derive_arbiter(input: TokenStream) -> TokenStream {
         _ => unimplemented!(),
     };
 
-    let field_names = fields.iter()
-        .map(|f| {
-            let name = &f.ident;
-            let ty = &f.ty;
+    let field_names = fields.iter().map(|f| {
+        let name = &f.ident;
+        let ty = &f.ty;
 
-            quote! { pub #name: #ty }
-        });
+        quote! { pub #name: #ty }
+    });
 
     let expanded = quote! {
         #[derive(Debug, Clone, PartialEq, FromRow, IntoProtoPayload)]
@@ -53,8 +52,7 @@ pub fn derive_from_row(input: TokenStream) -> TokenStream {
         _ => unimplemented!(),
     };
 
-    let field_names = fields.iter()
-        .map(|field| &field.ident);
+    let field_names = fields.iter().map(|field| &field.ident);
     let field_names_2 = field_names.clone();
 
     let expanded = quote! {
@@ -97,8 +95,7 @@ pub fn derive_into_base_entity(input: TokenStream) -> TokenStream {
         _ => unimplemented!(),
     };
 
-    let field_names = fields.iter()
-        .map(|field| &field.ident);
+    let field_names = fields.iter().map(|field| &field.ident);
 
     let expanded = quote! {
         impl ::ea_core::BaseEntity for #struct_name {
@@ -142,11 +139,13 @@ pub fn derive_into_mutate_entity(input: TokenStream) -> TokenStream {
         _ => unimplemented!(),
     };
 
-    let create_field_names = fields.iter()
+    let create_field_names = fields
+        .iter()
         .filter(|f| is_included_in(CREATE, f))
         .map(|field| &field.ident);
 
-    let update_field_names = fields.iter()
+    let update_field_names = fields
+        .iter()
         .filter(|f| is_included_in(UPDATE, f))
         .map(|field| &field.ident);
 
@@ -291,12 +290,10 @@ fn ty_inner_type<'a>(wrapper: &str, ty: &'a syn::Type) -> Option<&'a syn::Type> 
         }
 
         match p.path.segments[0].arguments {
-            syn::PathArguments::AngleBracketed(ref inner_ty) => {
-                match inner_ty.args[0] {
-                    syn::GenericArgument::Type(ref t) => return Some(t),
-                    _ => (),
-                }
-            }
+            syn::PathArguments::AngleBracketed(ref inner_ty) => match inner_ty.args[0] {
+                syn::GenericArgument::Type(ref t) => return Some(t),
+                _ => (),
+            },
             _ => (),
         }
     }

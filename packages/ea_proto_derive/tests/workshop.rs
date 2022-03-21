@@ -4,8 +4,8 @@ pub mod pb {
     tonic::include_proto!("ea");
 }
 
-use ea_proto_derive::ProtoAccessors;
 use ea_core::DbResult;
+use ea_proto_derive::ProtoAccessors;
 use internals::{Account, AccountRaw, Country, CountryRaw};
 
 #[derive(ProtoAccessors)]
@@ -17,7 +17,11 @@ impl CoreImpl {
         unimplemented!()
     }
 
-    async fn list_accounts(&self, _data: &pb::ListAccountsRequest, _page_size: i64) -> DbResult<Vec<AccountRaw>> {
+    async fn list_accounts(
+        &self,
+        _data: &pb::ListAccountsRequest,
+        _page_size: i64,
+    ) -> DbResult<Vec<AccountRaw>> {
         unimplemented!()
     }
 
@@ -25,15 +29,24 @@ impl CoreImpl {
         unimplemented!()
     }
 
-    async fn create_account(&self, _data: &pb::CreateAccountRequest) -> DbResult<Account> {
+    async fn create_account(
+        &self,
+        _data: &pb::CreateAccountRequest,
+    ) -> DbResult<Account> {
         unimplemented!()
     }
 
-    async fn soft_delete_account(&self, _data: &pb::DeleteAccountRequest) -> DbResult<Account> {
+    async fn soft_delete_account(
+        &self,
+        _data: &pb::DeleteAccountRequest,
+    ) -> DbResult<Account> {
         unimplemented!()
     }
 
-    async fn update_account(&self, _data: &pb::UpdateAccountRequest) -> DbResult<Account> {
+    async fn update_account(
+        &self,
+        _data: &pb::UpdateAccountRequest,
+    ) -> DbResult<Account> {
         unimplemented!()
     }
 
@@ -41,7 +54,11 @@ impl CoreImpl {
         unimplemented!()
     }
 
-    async fn list_countries(&self, _data: &pb::ListCountriesRequest, _page_size: i64) -> DbResult<Vec<CountryRaw>> {
+    async fn list_countries(
+        &self,
+        _data: &pb::ListCountriesRequest,
+        _page_size: i64,
+    ) -> DbResult<Vec<CountryRaw>> {
         unimplemented!()
     }
 
@@ -49,15 +66,24 @@ impl CoreImpl {
         unimplemented!()
     }
 
-    async fn create_country(&self, _data: &pb::CreateCountryRequest) -> DbResult<Country> {
+    async fn create_country(
+        &self,
+        _data: &pb::CreateCountryRequest,
+    ) -> DbResult<Country> {
         unimplemented!()
     }
 
-    async fn soft_delete_country(&self, _data: &pb::DeleteCountryRequest) -> DbResult<Country> {
+    async fn soft_delete_country(
+        &self,
+        _data: &pb::DeleteCountryRequest,
+    ) -> DbResult<Country> {
         unimplemented!()
     }
 
-    async fn update_country(&self, _data: &pb::UpdateCountryRequest) -> DbResult<Country> {
+    async fn update_country(
+        &self,
+        _data: &pb::UpdateCountryRequest,
+    ) -> DbResult<Country> {
         unimplemented!()
     }
 }

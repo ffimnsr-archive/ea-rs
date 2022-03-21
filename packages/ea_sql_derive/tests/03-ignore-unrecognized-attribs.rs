@@ -1,8 +1,8 @@
-use ea_sql_derive::{FromRow, IntoBaseEntity};
-use uuid::Uuid;
-use chrono::{DateTime, Utc};
 use chrono::serde::ts_seconds;
-use serde::{Serialize, Deserialize};
+use chrono::{DateTime, Utc};
+use ea_sql_derive::{FromRow, IntoBaseEntity};
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, FromRow, IntoBaseEntity)]
 pub struct Account {

@@ -1,10 +1,10 @@
 //! This module is the main entrypoint for address service.
 
+use ea_core::db::{get_db_pool, Pool};
+use ea_proto_derive::ProtoAccessors;
+use log::info;
 use std::env;
 use tonic::transport::Server;
-use log::info;
-use ea_core::db::{Pool, get_db_pool};
-use ea_proto_derive::ProtoAccessors;
 
 pub mod pb {
     tonic::include_proto!("ea");

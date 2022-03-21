@@ -1,6 +1,6 @@
+use chrono::{DateTime, Utc};
 use ea_sql_derive::{FromRow, IntoBaseEntity};
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 #[derive(FromRow, IntoBaseEntity)]
 pub struct Account {

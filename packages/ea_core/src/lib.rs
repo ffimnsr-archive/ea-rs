@@ -1,8 +1,8 @@
-use chrono::{NaiveDate, DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use prost_types::Timestamp;
-use tonic::transport::NamedService;
 use std::borrow::Cow;
 use tokio::time::Duration;
+use tonic::transport::NamedService;
 
 pub mod db;
 pub mod macros;
@@ -22,7 +22,7 @@ impl FromDt for Timestamp {
     fn from_utc(dt: DateTime<Utc>) -> Self {
         Timestamp {
             seconds: dt.timestamp(),
-            nanos: dt.timestamp_subsec_nanos() as i32
+            nanos: dt.timestamp_subsec_nanos() as i32,
         }
     }
 
@@ -30,7 +30,7 @@ impl FromDt for Timestamp {
         let dt = nd.and_hms_milli(0, 0, 1, 0);
         Timestamp {
             seconds: dt.timestamp(),
-            nanos: dt.timestamp_subsec_nanos() as i32
+            nanos: dt.timestamp_subsec_nanos() as i32,
         }
     }
 }
@@ -73,7 +73,9 @@ pub trait MutateEntity {
     }
 }
 
-pub async fn flip_service_status<U: NamedService>(mut reporter: tonic_health::server::HealthReporter) {
+pub async fn flip_service_status<U: NamedService>(
+    mut reporter: tonic_health::server::HealthReporter,
+) {
     let mut iter = 0u64;
     loop {
         iter += 1;
@@ -86,7 +88,6 @@ pub async fn flip_service_status<U: NamedService>(mut reporter: tonic_health::se
         };
     }
 }
-
 
 #[cfg(test)]
 mod tests {

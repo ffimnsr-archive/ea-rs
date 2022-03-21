@@ -1,10 +1,10 @@
 mod internals;
 
-use proc_macro::TokenStream;
-use quote::{format_ident, quote};
-use syn::{DeriveInput, parse_macro_input};
 use inflector::Inflector;
 use internals::symbol::*;
+use proc_macro::TokenStream;
+use quote::{format_ident, quote};
+use syn::{parse_macro_input, DeriveInput};
 
 #[proc_macro_derive(ProtoAccessors, attributes(ea_proto))]
 pub fn derive_proto_accessors(input: TokenStream) -> TokenStream {
@@ -19,7 +19,8 @@ pub fn derive_proto_accessors(input: TokenStream) -> TokenStream {
     };
 
     fn mk_err<T: quote::ToTokens>(t: T) -> proc_macro2::TokenStream {
-        syn::Error::new_spanned(t, "expected `ea_proto(name(\"...\"))`").to_compile_error()
+        syn::Error::new_spanned(t, "expected `ea_proto(name(\"...\"))`")
+            .to_compile_error()
     }
 
     let meta = match proto_attr.parse_meta() {
@@ -55,35 +56,44 @@ pub fn derive_proto_accessors(input: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     };
 
-    let expanded = meta.nested.iter().map(|nm| {
-        let (c, d, p, dp) = match nm {
-            syn::NestedMeta::Lit(syn::Lit::Str(s)) => {
-                let downcase = s.value().as_str().to_snake_case();
-                let pluralize = s.value().as_str().to_plural();
-                let downcase_pluralize = pluralize.clone().to_snake_case();
+    let expanded = meta
+        .nested
+        .iter()
+        .map(|nm| {
+            let (c, d, p, dp) = match nm {
+                syn::NestedMeta::Lit(syn::Lit::Str(s)) => {
+                    let downcase = s.value().as_str().to_snake_case();
+                    let pluralize = s.value().as_str().to_plural();
+                    let downcase_pluralize = pluralize.clone().to_snake_case();
 
-                let c = syn::Ident::new(&s.value(), s.span());
-                let d = syn::Ident::new(&downcase, s.span());
-                let p = syn::Ident::new(&pluralize, s.span());
-                let dp = syn::Ident::new(&downcase_pluralize, s.span());
-                (c, d, p, dp)
+                    let c = syn::Ident::new(&s.value(), s.span());
+                    let d = syn::Ident::new(&downcase, s.span());
+                    let p = syn::Ident::new(&pluralize, s.span());
+                    let dp = syn::Ident::new(&downcase_pluralize, s.span());
+                    (c, d, p, dp)
+                }
+                lit => panic!("expected string, found {:?}", lit),
+            };
+
+            proto_impl(&c, &d, &p, &dp, &struct_name)
+        })
+        .fold(quote! {}, |acc, x| {
+            quote! {
+                #acc
+                #x
             }
-            lit => panic!("expected string, found {:?}", lit),
-        };
-
-        proto_impl(&c, &d, &p, &dp, &struct_name)
-    })
-    .fold(quote! {}, |acc, x| {
-        quote! {
-            #acc
-            #x
-        }
-    });
+        });
 
     TokenStream::from(expanded)
 }
 
-fn proto_impl(c: &syn::Ident, d: &syn::Ident, p: &syn::Ident, dp: &syn::Ident, sn: &syn::Ident) -> proc_macro2::TokenStream {
+fn proto_impl(
+    c: &syn::Ident,
+    d: &syn::Ident,
+    p: &syn::Ident,
+    dp: &syn::Ident,
+    sn: &syn::Ident,
+) -> proc_macro2::TokenStream {
     let service_package = format_ident!("{}_service_server", d);
     let get_package_res_name = format_ident!("get_{}_response", d);
     let create_package_res_name = format_ident!("create_{}_response", d);

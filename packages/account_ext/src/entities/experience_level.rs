@@ -1,8 +1,19 @@
 use chrono::{DateTime, Utc};
+use ea_sql_derive::{
+    Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload,
+};
 use uuid::Uuid;
-use ea_sql_derive::{Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload};
 
-#[derive(Debug, Clone, PartialEq, Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Arbiter,
+    FromRow,
+    IntoBaseEntity,
+    IntoMutateEntity,
+    IntoProtoPayload,
+)]
 pub struct ExperienceLevel {
     pub id: Uuid,
 

@@ -1,8 +1,19 @@
 use chrono::{DateTime, Utc};
+use ea_sql_derive::{
+    Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload,
+};
 use uuid::Uuid;
-use ea_sql_derive::{Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload};
 
-#[derive(Debug, Clone, PartialEq, Arbiter, FromRow, IntoBaseEntity, IntoMutateEntity, IntoProtoPayload)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Arbiter,
+    FromRow,
+    IntoBaseEntity,
+    IntoMutateEntity,
+    IntoProtoPayload,
+)]
 pub struct WorkExperience {
     pub id: Uuid,
 
@@ -23,7 +34,6 @@ pub struct WorkExperience {
 
     // #[ea_sql(include_in(create, update))]
     // pub to_date: NaiveDate,
-
     #[ea_sql(include_in(create, update))]
     pub user_id: Uuid,
 

@@ -1,10 +1,10 @@
 //! This module is the main entrypoint for organization service.
 
+use ea_core::db::{get_db_pool, Pool};
+use ea_proto_derive::ProtoAccessors;
+use log::info;
 use std::env;
 use tonic::transport::Server;
-use log::info;
-use ea_core::db::{Pool, get_db_pool};
-use ea_proto_derive::ProtoAccessors;
 
 pub mod pb {
     tonic::include_proto!("ea");
@@ -66,9 +66,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
 
-    ::ea_core::spawn_health_reporter!(health_reporter,
-        "industry",
-        "organization");
+    ::ea_core::spawn_health_reporter!(health_reporter, "industry", "organization");
 
     Server::builder()
         .add_service(reflection_service)
