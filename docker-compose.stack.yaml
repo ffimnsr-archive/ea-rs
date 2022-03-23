@@ -1,8 +1,8 @@
 version: "3.9"
 services:
-  account:
-    image: ghcr.io/0x61c88647/ea_account:0.1.4
-    environment:
-      - DSN=root
-    ports:
-      - 8081:8081/tcp
+    account:
+        image: ghcr.io/0x61c88647/ea_account:0.1.4
+        environment:
+            - DSN=mongodb://root:pass@localhost:27017
+        ports:
+            - 8081:8081/tcp
