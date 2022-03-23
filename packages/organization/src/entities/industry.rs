@@ -1,13 +1,12 @@
 use chrono::{DateTime, Utc};
+use mongodb::bson::oid::ObjectId;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Industry {
-    pub id: Uuid,
+    #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<ObjectId>,
     pub name: String,
     pub description: String,
     pub created_at: DateTime<Utc>,

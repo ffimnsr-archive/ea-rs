@@ -71,24 +71,6 @@ pub async fn error_handler(err: routerify::RouteError) -> Response<Body> {
     }
 }
 
-pub async fn logger(
-    res: Response<Body>,
-    req_info: RequestInfo,
-) -> ServiceResult<Response<Body>> {
-    let request_id = req_info
-        .context::<Uuid>()
-        .ok_or(ServiceError::DefinedError("Unable to get request id"))?;
-
-    log::info!(
-        "[request-id:{}] {} {} {}",
-        request_id,
-        res.status().as_u16(),
-        req_info.method(),
-        req_info.uri().path()
-    );
-    Ok(res)
-}
-
 #[cfg(test)]
 mod tests {
     #[test]

@@ -12,7 +12,8 @@ docker build --force-rm \
     --build-arg service_version=${PROJECT_VERSION} \
     --build-arg build-date=$(date --iso-8601=seconds -u) \
     --build-arg vcs_ref=$(git rev-parse --short HEAD) \
-    -t ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION} ../..
+    -t ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION}
+    -t ghcr.io/0x61c88647/ea_account:latest ../..
 '''
 
 [tasks.push]
