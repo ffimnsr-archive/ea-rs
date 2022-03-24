@@ -1,10 +1,8 @@
-use std::error::Error;
 use hyper::body::HttpBody;
-use hyper::{
-    header::HeaderValue, Body, Request, Response,
-};
+use hyper::{header::HeaderValue, Body, Request, Response};
 use routerify::ext::RequestExt;
 use routerify::{Middleware, RequestInfo};
+use std::error::Error;
 use uuid::Uuid;
 
 use crate::{header, ServiceError};
@@ -43,7 +41,9 @@ where
 {
     let request_id = req_info
         .context::<Uuid>()
-        .ok_or(ServiceError::DefinedError("Unable to find request ID in context"))
+        .ok_or(ServiceError::DefinedError(
+            "Unable to find request ID in context",
+        ))
         .map(|c| c.to_string())?;
 
     let value = HeaderValue::from_str(request_id.as_str()).unwrap();
