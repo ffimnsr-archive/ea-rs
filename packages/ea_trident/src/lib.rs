@@ -3,12 +3,7 @@ pub mod header;
 pub mod middleware;
 pub mod mime_type;
 
-use hyper::{
-    header as HeaderKey, Body, Method, Request, Response,
-    StatusCode,
-};
-use routerify::RequestInfo;
-use uuid::Uuid;
+use hyper::{header as HeaderKey, Body, Method, Request, Response, StatusCode};
 
 pub use error::ServiceError;
 

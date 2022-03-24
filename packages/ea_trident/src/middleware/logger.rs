@@ -1,7 +1,7 @@
-use std::error::Error;
 use hyper::body::HttpBody;
 use hyper::Response;
 use routerify::{Middleware, RequestInfo};
+use std::error::Error;
 use uuid::Uuid;
 
 use crate::ServiceError;
