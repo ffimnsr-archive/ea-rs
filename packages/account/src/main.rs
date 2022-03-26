@@ -1,5 +1,4 @@
 //! This module is the main entrypoint for account service.
-
 mod entity;
 mod global;
 
