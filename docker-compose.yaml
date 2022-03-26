@@ -2,7 +2,6 @@ version: "3.9"
 services:
     mongo:
         image: mongo:5.0.6-focal
-        restart: unless-stopped
         environment:
             - MONGO_INITDB_ROOT_USERNAME=root
             - MONGO_INITDB_ROOT_PASSWORD=pass
@@ -10,6 +9,9 @@ services:
             - 27017:27017/tcp
     redis:
         image: redis:6.2.6-bullseye
-        restart: unless-stopped
+        command: redis-server /usr/local/etc/redis/redis.conf --requirepass pass
         ports:
             - 6379:6379/tcp
+        volumes:
+            - $PWD/redis-data:/var/lib/redis-data
+            - $PWD/config/redis.conf:/usr/local/etc/redis/redis.conf
