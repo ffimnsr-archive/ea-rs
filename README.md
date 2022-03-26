@@ -9,12 +9,6 @@ cp -rl ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/
 cargo doc --open
 ```
 
-## Running Hydra
-
-```
-docker-compose run hydra migrate sql -e --yes
-```
-
 ## License
 
 Copyright (C) Open Sesame Pt. Ltd. - All Rights Reserved.
