@@ -12,13 +12,13 @@ docker build --force-rm \
     --build-arg service_version=${PROJECT_VERSION} \
     --build-arg build-date=$(date --iso-8601=seconds -u) \
     --build-arg vcs_ref=$(git rev-parse --short HEAD) \
-    -t ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION}
-    -t ghcr.io/0x61c88647/ea_account:latest ../..
+    -t 0x61c66847/ea_account:${PROJECT_VERSION} \
+    -t 0x61c66847/ea_account:latest ../..
 '''
 
 [tasks.push]
 script = '''
-docker image push -a ghcr.io/0x61c88647/ea_account
+docker image push -a 0x61c66847/ea_account
 '''
 
 [tasks.clean]
@@ -30,7 +30,7 @@ docker image prune -a --filter="until=1h" --filter "label=org.label-schema.name=
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-docker pull ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION}
+docker pull 0x61c66847/ea_account:${PROJECT_VERSION}
 docker images
 EOF
 '''
@@ -41,15 +41,15 @@ ssh -T sandbox << EOF
 docker stop account-server && docker rm account-server
 docker run -d --name account-server \
     -p 8010:8010/tcp \
-    -e DSN=postgres://ea:postgres@localhost:5432/ea_account?sslmode=disable \
+    -e DSN=${DSN} \
     --restart always \
-    ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION}
+    0x61c66847/ea_account:${PROJECT_VERSION}
 EOF
 '''
 
 [tasks.push-manual]
 script = '''
-docker save ghcr.io/0x61c88647/ea_account:${PROJECT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
+docker save 0x61c66847/ea_account:${PROJECT_VERSION} | pv | bzip2 > ./images/ea_account.tar.bz2
 rsync -avzP ./images/ea_account.tar.bz2 sandbox:~/ea_account.tar.bz2
 '''
 

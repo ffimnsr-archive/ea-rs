@@ -32,7 +32,8 @@ pub async fn retrieve(req: Request<Body>) -> ServiceResult<Response<Body>> {
         .try_collect::<Vec<Organization>>()
         .await
         .map_err(ServiceError::Mongo)?;
-    let output = serde_json::to_string(&organizations).map_err(ServiceError::SerdeJson)?;
+    let output =
+        serde_json::to_string(&organizations).map_err(ServiceError::SerdeJson)?;
 
     ea_trident::json_response(StatusCode::OK, Body::from(output))
 }
@@ -97,7 +98,8 @@ pub async fn find_one(req: Request<Body>) -> ServiceResult<Response<Body>> {
         .map_err(ServiceError::Mongo)?
         .ok_or(ServiceError::DefinedError("Unable to find mongo record"))?;
 
-    let output = serde_json::to_string(&organization).map_err(ServiceError::SerdeJson)?;
+    let output =
+        serde_json::to_string(&organization).map_err(ServiceError::SerdeJson)?;
 
     ea_trident::json_response(StatusCode::OK, Body::from(output))
 }
@@ -114,7 +116,8 @@ pub async fn find(req: Request<Body>) -> ServiceResult<Response<Body>> {
         .try_collect::<Vec<Organization>>()
         .await
         .map_err(ServiceError::Mongo)?;
-    let output = serde_json::to_string(&organizations).map_err(ServiceError::SerdeJson)?;
+    let output =
+        serde_json::to_string(&organizations).map_err(ServiceError::SerdeJson)?;
 
     ea_trident::json_response(StatusCode::OK, Body::from(output))
 }
@@ -152,7 +155,8 @@ pub async fn upsert(req: Request<Body>) -> ServiceResult<Response<Body>> {
             "Unable to find and update mongo record",
         ))?;
 
-    let output = serde_json::to_string(&organization).map_err(ServiceError::SerdeJson)?;
+    let output =
+        serde_json::to_string(&organization).map_err(ServiceError::SerdeJson)?;
 
     ea_trident::json_response(StatusCode::OK, Body::from(output))
 }
@@ -227,7 +231,7 @@ async fn main() -> ServiceResult<()> {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-        let client_options = ClientOptions::parse(DEFAULT_DB_URI)
+    let client_options = ClientOptions::parse(DEFAULT_DB_URI)
         .await
         .map_err(ServiceError::Mongo)?;
     let client = Client::with_options(client_options).map_err(ServiceError::Mongo)?;
