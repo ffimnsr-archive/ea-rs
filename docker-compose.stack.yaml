@@ -1,33 +1,51 @@
 version: "3.9"
 services:
-    # account:
-    #     image: ghcr.io/0x61c88647/ea_account:0.1.4
-    #     environment:
-    #         - DSN=mongodb://root:pass@localhost:27017
-    #     ports:
-    #         - 8081:8081/tcp
-    mongo:
-        image: mongo:5.0.6-focal
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-}
-            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS:-}
-        ports:
-            - 27017:27017/tcp
-    mongo_express:
-        image: mongo-express:1.0.0-alpha.4
-        ports:
-            - 8081:8081/tcp
-        environment:
-            - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-            - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
-            - ME_CONFIG_MONGODB_URL=mongodb://root:pass@mongo/
-        depends_on:
-            - mongo
-    redis:
-        image: redis:6.2.6-bullseye
-        command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASS:-}
-        ports:
-            - 6379:6379/tcp
-        volumes:
-            - $PWD/.docker/redis/redis-data:/var/lib/redis-data
-            - $PWD/.docker/redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+  haproxy:
+    image: 0x61c66847/haproxy:2.5.5
+    dns:
+      - 127.0.0.11
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    volumes:
+      - $PWD/.docker/haproxy/pem/:/etc/haproxy/pem/:ro
+      - $PWD/.docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  mongo:
+    image: mongo:5.0.6-focal
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017/tcp
+  mongo_express:
+    image: mongo-express:1.0.0-alpha.4
+    ports:
+      - 8081:8081/tcp
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
+      - ME_CONFIG_MONGODB_URL=mongodb://root:pass@sesame_mongo:27017/
+    depends_on:
+      - mongo
+  redis:
+    image: redis:6.2.6-bullseye
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass pass
+    ports:
+      - 6379:6379/tcp
+    volumes:
+      - $PWD/.docker/redis/redis-data:/var/lib/redis-data
+      - $PWD/.docker/redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+  account:
+    image: 0x61c66847/ea_account:latest
+    environment:
+      - DSN=mongodb://root:pass@sesame_mongo:27017/
+      - FRONTEND_URL=www.vastorigins.com
+    depends_on:
+      - mongo
+  address:
+    image: 0x61c66847/ea_address:latest
+    environment:
+      - DSN=mongodb://root:pass@sesame_mongo:27017/
+      - FRONTEND_URL=www.vastorigins.com
+    depends_on:
+      - mongo

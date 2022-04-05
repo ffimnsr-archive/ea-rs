@@ -1,8 +1,15 @@
-FROM haproxy:2.5.5-bullseye
+ARG haproxy_version
 
-RUN git clone https://github.com/haproxytech/haproxy-lua-oauth.git \
-    && cd haproxy-lua-oauth \
+FROM haproxy:${haproxy_version}
+
+USER root
+RUN apt-get update && apt install -y curl unzip
+RUN curl -Lo haproxy-lua-oauth.zip https://github.com/haproxytech/haproxy-lua-oauth/archive/master.zip \
+    && unzip haproxy-lua-oauth.zip \
+    && cd haproxy-lua-oauth-master \
     && chmod +x ./install.sh \
-    && sudo ./install.sh luaoauth
+    && ./install.sh luaoauth
 
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY ./haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY ./pem /etc/haproxy/
+USER haproxy
