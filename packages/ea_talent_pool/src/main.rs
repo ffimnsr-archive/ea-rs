@@ -16,6 +16,7 @@ use std::time::Instant;
 use std::{env, sync::Arc};
 use tokio::signal;
 use tower_http::cors::CorsLayer;
+use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
 
 use crate::global::*;
 
@@ -38,6 +39,14 @@ fn router(db: Arc<Database>) -> Router {
         .nest("/api/pools", handler::talent_pool::api_router())
         .layer(Extension(db))
         .layer(Extension(uptime))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new())
+                .on_response(
+                    DefaultOnResponse::new()
+                        .level(tracing::Level::INFO)
+                )
+        )
         .layer(
             CorsLayer::new()
                 .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
@@ -63,7 +72,7 @@ async fn main() -> ServiceResult<()> {
     dotenv::dotenv().ok();
 
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "ea_talent_pool=trace,ea_trident=info");
+        env::set_var("RUST_LOG", "ea_talent_pool=trace,ea_trident=info,tower_http=info");
     }
 
     tracing_subscriber::fmt()

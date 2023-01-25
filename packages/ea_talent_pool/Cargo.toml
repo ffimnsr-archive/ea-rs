@@ -28,5 +28,6 @@ nanoid = "0.4"
 hyper = { version = "0.14", features = ["full"] }
 axum = "0.5"
 axum-macros = "0.2"
-tower-http = { version = "0.3.0", features = ["cors"] }
+tower-http = { version = "0.3.0", features = ["cors", "trace"] }
+rand = "0.8"
 ea_trident = { version = "0.1", path = "../ea_trident" }

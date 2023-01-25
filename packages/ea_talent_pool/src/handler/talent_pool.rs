@@ -9,6 +9,7 @@ use mongodb::bson::oid::ObjectId;
 use mongodb::options::FindOneAndUpdateOptions;
 use mongodb::Database;
 use serde_json::json;
+use rand::seq::SliceRandom;
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -164,8 +165,32 @@ async fn delete(
     Ok((StatusCode::OK, ()))
 }
 
+async fn rand_talent(
+    Extension(db): Extension<Arc<Database>>,
+) -> ServiceResult<impl IntoResponse> {
+    let collection = db.collection::<TalentPool>(DEFAULT_COLLECTION);
+    let cursor = collection
+        .find(None, None)
+        .await
+        .map_err(ServiceError::Mongo)?;
+
+    let talent_pools = cursor
+        .try_collect::<Vec<TalentPool>>()
+        .await
+        .map_err(ServiceError::Mongo)?;
+
+    let Some(talent) = talent_pools.choose(&mut rand::thread_rng()) else {
+        return Ok((StatusCode::OK, Json(TalentPool::default())));
+    };
+
+    let talent = talent.clone();
+
+    Ok((StatusCode::OK, Json(talent)))
+}
+
 pub fn api_router() -> Router {
     Router::new()
+        .route("/rand", get(rand_talent))
         .route("/", get(retrieve).post(create))
         .route("/:id",
             get(find_by_id)

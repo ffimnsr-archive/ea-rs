@@ -326,6 +326,7 @@ dependencies = [
  "log",
  "mongodb",
  "nanoid",
+ "rand",
  "serde",
  "serde_json",
  "tokio",
@@ -352,6 +353,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "tower",
  "uuid 0.8.2",
 ]
 
@@ -1536,6 +1538,7 @@ dependencies = [
  "tower",
  "tower-layer",
  "tower-service",
+ "tracing",
 ]
 
 [[package]]

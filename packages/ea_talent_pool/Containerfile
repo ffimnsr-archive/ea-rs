@@ -18,7 +18,7 @@ RUN rustup component add rustfmt \
   && cargo init /code/ea_trident
 
 # copy cargo meta file
-COPY ./packages/talent_pool/Cargo.toml /code/app
+COPY ./packages/ea_talent_pool/Cargo.toml /code/app
 COPY ./packages/ea_trident/Cargo.toml /code/ea_trident
 
 # vendor third party packages
@@ -36,7 +36,7 @@ FROM base AS builder
 
 # copy source only
 COPY ./packages/ea_trident /code/ea_trident
-COPY ./packages/talent_pool /code/app
+COPY ./packages/ea_talent_pool /code/app
 
 # compile app
 RUN cargo build --release --offline
