@@ -72,6 +72,7 @@ async fn main() -> ServiceResult<()> {
 
     let dsn = env::var("DSN").ok().unwrap_or(DEFAULT_DSN.to_string());
 
+    log::info!("{}", dsn);
 
     let client_options = ClientOptions::parse(dsn)
         .await

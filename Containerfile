@@ -3,7 +3,7 @@
 ##
 ## STEP 1 - BUILD
 ##
-ARG rustc_version=1.64.0
+ARG rustc_version=1.66.0
 
 FROM rust:${rustc_version} AS base
 
