@@ -1,3 +1,0 @@
-[submodule "packages/psyche"]
-	path = packages/psyche
-	url = git@github.com:ffimnsr/psyche.git
